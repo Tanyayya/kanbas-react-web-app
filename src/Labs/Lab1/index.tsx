@@ -76,7 +76,11 @@ My favorite books (in no particular order)
 </ul>
 Your favorite books (in no particular order)
 <ul id="wd-your-books">
-  {/* complete on your own */}
+<li>Mrs Gandhi's Last Battle</li>
+  <li>Sapiens</li>
+  <li>The hiding place</li>
+  <li>Alive</li>
+  
 </ul>
 
       </div>
@@ -279,7 +283,7 @@ Please
 <a id="wd-lipsum" href="https://www.lipsum.com"> click here</a>
 to get dummy text<br/>
 Please
-<a id="wd-github" href="https://github.com/Tanyayya/webDev"> click here</a>
+<a id="wd-github" href="https://github.com/Tanyayya/kanbas-react-web-app"> click here</a>
 to go to the git repo<br/>
   
       </div>
