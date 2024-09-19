@@ -7,6 +7,7 @@ import Kanbas from "../Kanbas";
 export default function Labs() {
   return (
     <div>
+      <h2 id="wd-name">Tanya Shukla</h2>
       <h1>Labs</h1>
       <TOC></TOC>
       <Routes>
