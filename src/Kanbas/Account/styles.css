@@ -10,8 +10,11 @@
 }
 .list-group-item-border {
   color: red;
+  border-left: 2px black solid; /* Ensure there's a semicolon */
 }
 
-.list-group-item-border.active {
-  border-left: 2px black solid; /* Add your desired styles here */
+
+
+#wd-account-navigation .list-group-item-border.active {
+  border-left: 2px solid black; /* Use your desired styles */
 }

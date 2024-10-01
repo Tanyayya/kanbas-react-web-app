@@ -6,7 +6,7 @@ export default function AccountNavigation() {
       <NavLink
         to={`/Kanbas/Account/Signin`}
         className={({ isActive }) =>
-          `list-group-item text-danger p-2 list-group-item-border ${
+          `list-group-item p-2 list-group-item-border text-danger ${
             isActive ? "active" : ""
           }`
         }
@@ -17,7 +17,7 @@ export default function AccountNavigation() {
       <NavLink
         to={`/Kanbas/Account/Signup`}
         className={({ isActive }) =>
-          `list-group-item text-danger p-2 list-group-item-border ${
+          `list-group-item p-2 list-group-item-border text-danger ${
             isActive ? "active" : ""
           }`
         }
@@ -28,7 +28,7 @@ export default function AccountNavigation() {
       <NavLink
         to={`/Kanbas/Account/Profile`}
         className={({ isActive }) =>
-          `list-group-item text-danger p-2 list-group-item-border ${
+          `list-group-item p-2 list-group-item-border text-danger ${
             isActive ? "active" : ""
           }`
         }

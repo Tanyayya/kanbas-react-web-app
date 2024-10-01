@@ -63,7 +63,7 @@ export default function CoursesNavigation() {
         to="/Kanbas/Courses/1234/Quizzes"
         id="wd-course-quizzes-link"
         className={({ isActive }) =>
-          `list-group-item list-group-item-border text-danger border  border-0 ${
+          `list-group-item list-group-item-border text-danger border border-0 ${
             isActive ? "active" : ""
           }`
         }
