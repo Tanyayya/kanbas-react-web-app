@@ -1,0 +1,17 @@
+#wd-signin-screen {
+  width: 300px;
+}
+
+#wd-profile-screen {
+  width: 300px;
+}
+#wd-signup-screen {
+  width: 300px;
+}
+.list-group-item-border {
+  color: red;
+}
+
+.list-group-item-border.active {
+  border-left: 2px black solid; /* Add your desired styles here */
+}
