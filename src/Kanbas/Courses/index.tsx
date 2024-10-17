@@ -1,26 +1,35 @@
 import CoursesNavigation from "./Navigation";
-import { Navigate, Route, Routes } from "react-router";
+import { Navigate, Route, Routes, useLocation } from "react-router";
 import Modules from "./Modules";
 import Assignments from "./Assignments";
 import Home from "./Home";
 import { FaAlignJustify } from "react-icons/fa";
 import AssignmentEditor from "./Assignments/Editor";
 import PeopleTable from "./People/Table";
-import { PiLessThanLight } from "react-icons/pi";
+import { PiGreaterThanLight } from "react-icons/pi";
+import { courses } from "../Database";
+import { useParams } from "react-router";
+
+
 export default function Courses() {
+  const { cid } = useParams(); // Retrieve course id from URL
+  const course = courses.find((course) => course._id === cid); // Find the selected course
+  const { pathname } = useLocation();
+
   return (
     <div id="wd-courses">
       <h3 className="text-danger">
         <FaAlignJustify className="me-4 fs-4 mb-1" />
-        Course 1234{" "}
+        {course && course.name} &gt; {pathname.split("/")[3]}
+
         <span className="text-secondary">
-          <PiLessThanLight></PiLessThanLight>
+          <PiGreaterThanLight className=" mb-1 " />
         </span>{" "}
         Assignments{" "}
         <span className="text-secondary">
-          <PiLessThanLight></PiLessThanLight>
+          <PiGreaterThanLight className=" mb-1 "  />
         </span>{" "}
-        <span className="text-dark">A1 </span>
+        <span className="text-dark">A1</span>
       </h3>
       <hr />
       <div className="d-flex">
@@ -29,10 +38,12 @@ export default function Courses() {
         </div>
         <div className="flex-fill">
           <Routes>
+            
             <Route path="/" element={<Navigate to="Home" />} />
             <Route path="Home" element={<Home />} />
             <Route path="Modules" element={<Modules />} />
             <Route path="Assignments" element={<Assignments />} />
+            
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="People" element={<PeopleTable />} />
           </Routes>

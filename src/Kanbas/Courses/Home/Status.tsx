@@ -14,15 +14,17 @@ export default function CourseStatus() {
       <h2>Course Status</h2>
       <div className="d-flex">
         <div className="w-50 pe-1">
-          <button className="btn btn-lg btn-secondary w-100 text-nowrap ">
-            <MdDoNotDisturbAlt className="me-2 fs-5" />
-            Unpublish
-          </button>
+        <button className="btn btn-lg btn-secondary w-100 text-nowrap d-flex align-items-center">
+  <MdDoNotDisturbAlt className="me-1 fs-4" /> 
+  Unpublish
+</button>
+
         </div>
         <div className="w-50">
-          <button className="btn btn-lg btn-success w-100">
-            <FaCheckCircle className="me-2 fs-5" /> Publish{" "}
-          </button>
+        <button className="btn btn-lg btn-success w-100 text-nowrap d-flex align-items-center">
+  <FaCheckCircle className="me-2 fs-4" /> 
+  Unpublish
+</button>
         </div>
       </div>
       <br />
