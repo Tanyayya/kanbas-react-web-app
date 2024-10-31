@@ -7,11 +7,10 @@ import { FaAlignJustify } from "react-icons/fa";
 import AssignmentEditor from "./Assignments/Editor";
 import PeopleTable from "./People/Table";
 import { PiGreaterThanLight } from "react-icons/pi";
-import { courses } from "../Database";
 import { useParams } from "react-router";
 
 
-export default function Courses() {
+export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams(); // Retrieve course id from URL
   const course = courses.find((course) => course._id === cid); // Find the selected course
   const { pathname } = useLocation();
@@ -45,6 +44,7 @@ export default function Courses() {
             <Route path="Assignments" element={<Assignments />} />
             
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
+            <Route path="Assignments/new" element={<AssignmentEditor />} />
             <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>

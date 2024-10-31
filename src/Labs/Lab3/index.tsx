@@ -17,23 +17,25 @@ import ImpliedReturns from "./ImpliedReturns";
 import JsonStringify from "./JsonStringify";
 import LegacyFunctions from "./LegacyFunctions";
 import MapFunction from "./MapFunction";
-import Math from "./Math";
+
 import SimpleArrays from "./SimpleArrays";
 import Spreading from "./Spreading";
 import Styles from "./Styles";
 import TemplateLiterals from "./TemplateLiterals";
 import TernaryOperator from "./TernaryOperator";
-import TodoItem from "./todos/TodoItem";
+
 import VariablesAndConstants from "./VariablesAndConstants";
 import VariableTypes from "./VariableTypes";
 import Add from "./Add";
 import Square from "./square";
 import Highlight from "./Highlight";
+import { useSelector } from "react-redux";
 
 import PathParameters from "./PathParameters";
 
 export default function Lab3() {
   console.log('Hello World!');
+  const { todos } = useSelector((state: any) => state.todosReducer);
   return (
     <div id="wd-lab3">
       <h3>Lab 3</h3>
@@ -57,7 +59,14 @@ export default function Lab3() {
       <FilterFunction/>
       <JsonStringify/>
       <House/>
-      <TodoItem/>
+      <ul className="list-group">
+        {todos.map((todo: any) => (
+          <li className="list-group-item" key={todo.id}>
+            {todo.title}
+          </li>
+        ))}
+      </ul>
+
       <Spreading/>
       <Destructing/>
       <FunctionDestructing/>

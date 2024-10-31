@@ -19,7 +19,7 @@ export default function CoursesNavigation() {
     { label: "People", path: "People" },
   ];
 
-  console.log(pathname)
+  
 
   return (
     <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">

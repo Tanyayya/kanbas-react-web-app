@@ -180,7 +180,7 @@ export default function Lab1() {
         <br />
         Loading a local image:
         <br />
-        <img id="wd-teslabot" src="images/teslabot.jpg" height="200px" />
+        <img id="wd-teslabot" src="images/course1.jpg" height="200px" />
       </div>
       <div id="wd-forms">
         <h4>Form Elements</h4>

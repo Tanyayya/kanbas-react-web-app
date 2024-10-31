@@ -86,3 +86,28 @@ export default function Lab2(){
     );
     
 }
+// import  React from 'react';
+// import { Link,Route,Routes, useParams } from 'react-router-dom';
+
+// function Def() {
+//   const { pathname } = useParams();
+//   return (
+//     <div>
+//       output =
+//       {pathname?.endsWith("r") && <span>p</span>}
+//       {pathname?.endsWith("w") && <span>y</span>}
+//     </div>
+//   );
+// }
+
+// export default function Lab2() {
+//   return (
+//     <div>
+//       <Link to="q/w">x</Link>
+//       <Link to="q/s">r</Link>
+//       <Routes>
+//         <Route path="q/:a" element={<Def />} />
+//       </Routes>
+//     </div>
+//   );
+// }
