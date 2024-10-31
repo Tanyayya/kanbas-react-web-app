@@ -10,7 +10,12 @@ import { addAssignment, updateAssignment } from "./reducer"; // Ensure you impor
 
 export default function AssignmentEditor() {
     const { cid, aid } = useParams();
-   
+    const { currentUser } = useSelector((state: any) => state.accountReducer); // Get current user
+    
+    const isFaculty = currentUser?.role === "FACULTY";
+    
+  
+  // Check if current user has the FACULTY role
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { assignments } = useSelector((state:any) => state.assignmentsReducer);
@@ -172,7 +177,7 @@ export default function AssignmentEditor() {
                     <input id="availableDate" type="date" className="form-control" value={formData.availableDate} onChange={handleInputChange} />
                 </div>
             </div>
-
+            {isFaculty && (
             <div className="d-flex justify-content-end mb-3">
                 <Link
                 id="wd-cancel-btn"
@@ -186,7 +191,7 @@ export default function AssignmentEditor() {
                     className="btn btn-danger me-2">
                     Save
                 </Link>
-            </div>
+            </div> )}
         </div>
     );
 }

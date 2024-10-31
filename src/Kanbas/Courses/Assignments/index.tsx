@@ -12,6 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function Assignments() {
   const { cid } = useParams(); 
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: any) => state.accountReducer); // Get current user
+ 
+  
+ 
+  const isFaculty = currentUser?.role === "FACULTY";
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const courseAssignments = assignments.filter(
      (assignment:any) => assignment.course === cid
@@ -26,7 +31,7 @@ export default function Assignments() {
 
   const confirmDelete = () => {
     if (assignmentToDelete) {
-      dispatch(deleteAssignment(assignmentToDelete)); // Call the delete action
+      dispatch(deleteAssignment(assignmentToDelete)); 
     }
     setShowDeleteDialog(false);
     setAssignmentToDelete(null);
@@ -78,11 +83,13 @@ export default function Assignments() {
                   <b>Due</b> {assignment.dueDate} at 11:59pm | {assignment.points} pts
                 </small>
               </div>
-              <FaTrash 
-                className="text-danger me-3 mb-1 fs-5"  
-                onClick={() => handleDeleteClick(assignment._id)} 
-                style={{ cursor: 'pointer' }} 
-              />
+              {isFaculty && (
+        <FaTrash 
+          className="text-danger me-3 mb-1 fs-5"  
+          onClick={() => handleDeleteClick(assignment._id)} 
+          style={{ cursor: 'pointer' }} 
+        />
+      )}
               <LessonControlButtons />
             </li>
           ))

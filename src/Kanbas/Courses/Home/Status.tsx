@@ -23,7 +23,7 @@ export default function CourseStatus() {
         <div className="w-50">
         <button className="btn btn-lg btn-success w-100 text-nowrap d-flex align-items-center">
   <FaCheckCircle className="me-2 fs-4" /> 
-  Unpublish
+  Publish
 </button>
         </div>
       </div>

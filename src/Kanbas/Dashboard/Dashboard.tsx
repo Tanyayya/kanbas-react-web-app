@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { enrollCourse, unenrollCourse } from "./reducer"; // Adjust the import path accordingly
-import { useState } from "react";
+import { enrollCourse, unenrollCourse,setEnrollments } from "./reducer"; // Adjust the import path accordingly
+import { useState,useEffect } from "react";
+
 
 export default function Dashboard({
   courses,
@@ -18,9 +19,10 @@ export default function Dashboard({
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
 }) {
+  const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector((state: any) => state.enrollmentReducer); // Access enrollments from the store
-  const dispatch = useDispatch();
+  
 
   const isFaculty = currentUser?.role === "FACULTY";
   const isStudent = currentUser?.role === "STUDENT"; // Check if user is a student
@@ -32,10 +34,11 @@ export default function Dashboard({
     dispatch(enrollCourse({ user: currentUser._id, course: courseId }));
   };
 
+
   const handleUnenroll = (courseId: string) => {
     dispatch(unenrollCourse({ user: currentUser._id, course: courseId }));
   };
-
+  
   
   const displayedCourses = showAllCourses ? courses : courses.filter(course =>
     enrollments.some((enrollment: any) => enrollment.course === course._id)
