@@ -77,19 +77,19 @@ export default function Dashboard({
       )}
 
       {/* Enrollment Button for Students */}
-      {isStudent && (
+     
         <button className="btn btn-info float-end" onClick={toggleCourses}>
           {showAllCourses ? "Show Enrolled Courses" : "Show All Courses"}
         </button>
-      )}
+     
 
-<h2 id="wd-dashboard-published">Courses {isFaculty ? `(${filteredCourses.length})` : `(${displayedCourses.length})`}</h2>
+<h2 id="wd-dashboard-published">Courses {`(${displayedCourses.length})`}</h2>
 
       <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
           
-        {(isFaculty ? filteredCourses : displayedCourses).map((course) => (
+        (displayedCourses).map((course) => (
   <div key={course._id} className="wd-dashboard-course col" style={{ width: "300px" }}>
     <div className="card rounded-3 overflow-hidden h-100">
       <Link
@@ -124,14 +124,14 @@ export default function Dashboard({
           )}
 
           {/* Render Enroll and Unenroll buttons for Students */}
-          {isStudent && (
+          
              enrollments.some((enrollment: any) => enrollment.course === course._id && enrollment.user === currentUser._id) ? (
               <button
                 onClick={(event) => {
                   event.preventDefault();
                   handleUnenroll(course._id);
                 }}
-                className="btn btn-danger float-end"
+                className="btn btn-danger float-end my-2"
               >
                 Unenroll
               </button>
@@ -141,12 +141,12 @@ export default function Dashboard({
                   event.preventDefault();
                   handleEnroll(course._id);
                 }}
-                className="btn btn-success float-end"
+                className="btn btn-success float-end my-2"
               >
                 Enroll
               </button>
             )
-          )}
+          
         </div>
       </Link>
     </div>
