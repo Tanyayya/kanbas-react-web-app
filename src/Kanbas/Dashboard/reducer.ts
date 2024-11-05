@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { enrollments } from '../Database';
 
 const initialState = {
-    enrollments: [] as {user:string;course:string}[],
+    enrollments:enrollments,
      
 };
 
