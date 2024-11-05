@@ -41,7 +41,7 @@ export default function Dashboard({
   
   
   const displayedCourses = showAllCourses ? courses : courses.filter(course =>
-    enrollments.some((enrollment: any) => enrollment.course === course._id)
+     enrollments.some((enrollment: any) => enrollment.course === course._id && enrollment.user === currentUser._id)
   );
 
   const filteredCourses = courses.filter(course => enrollments);
