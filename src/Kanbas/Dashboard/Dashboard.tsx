@@ -125,7 +125,7 @@ export default function Dashboard({
 
           {/* Render Enroll and Unenroll buttons for Students */}
           {isStudent && (
-            enrollments.some((enrollment: any) => enrollment.course === course._id) ? (
+             enrollments.some((enrollment: any) => enrollment.course === course._id && enrollment.user === currentUser._id) ? (
               <button
                 onClick={(event) => {
                   event.preventDefault();
