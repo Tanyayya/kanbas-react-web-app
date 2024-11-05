@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { enrollCourse, unenrollCourse,setEnrollments } from "./reducer"; // Adjust the import path accordingly
-import { useState,useEffect } from "react";
-
+import { enrollCourse, unenrollCourse } from "./reducer"; // Adjust the import path accordingly
+import { useState } from "react";
 
 export default function Dashboard({
   courses,
@@ -19,10 +18,9 @@ export default function Dashboard({
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
 }) {
-  const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector((state: any) => state.enrollmentReducer); // Access enrollments from the store
-  
+  const dispatch = useDispatch();
 
   const isFaculty = currentUser?.role === "FACULTY";
   const isStudent = currentUser?.role === "STUDENT"; // Check if user is a student
@@ -34,14 +32,13 @@ export default function Dashboard({
     dispatch(enrollCourse({ user: currentUser._id, course: courseId }));
   };
 
-
   const handleUnenroll = (courseId: string) => {
     dispatch(unenrollCourse({ user: currentUser._id, course: courseId }));
   };
   
   
   const displayedCourses = showAllCourses ? courses : courses.filter(course =>
-     enrollments.some((enrollment: any) => enrollment.course === course._id && enrollment.user === currentUser._id)
+    enrollments.some((enrollment: any) => enrollment.course === course._id && enrollment.user === currentUser._id)
   );
 
   const filteredCourses = courses.filter(course => enrollments);
@@ -77,26 +74,26 @@ export default function Dashboard({
       )}
 
       {/* Enrollment Button for Students */}
-     
+      {(
         <button className="btn btn-info float-end" onClick={toggleCourses}>
           {showAllCourses ? "Show Enrolled Courses" : "Show All Courses"}
         </button>
-     
+      )}
 
-<h2 id="wd-dashboard-published">Courses {`(${displayedCourses.length})`}</h2>
+<h2 id="wd-dashboard-published">Courses { `(${filteredCourses.length})`}</h2>
 
       <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
           
-        (displayedCourses).map((course) => (
+        {(displayedCourses).map((course) => (
   <div key={course._id} className="wd-dashboard-course col" style={{ width: "300px" }}>
     <div className="card rounded-3 overflow-hidden h-100">
       <Link
         to={`/Kanbas/Courses/${course._id}/Home`}
         className="wd-dashboard-course-link text-decoration-none text-dark"
       >
-        <img src={course.img} width="100%" height={160} alt={course.name} />
+        <img src={"/Images/reactjs.png"} width="100%" height={160} alt={course.name} />
         <div className="card-body">
           <h5 className="wd-dashboard-course-title card-title" style={{ maxHeight: "3rem", minHeight: "3rem", overflowY: "hidden" }}>
             {course.name}
@@ -124,14 +121,14 @@ export default function Dashboard({
           )}
 
           {/* Render Enroll and Unenroll buttons for Students */}
-          
-             enrollments.some((enrollment: any) => enrollment.course === course._id && enrollment.user === currentUser._id) ? (
+          {(
+            enrollments.some((enrollment: any) => enrollment.course === course._id && enrollment.user === currentUser._id) ? (
               <button
                 onClick={(event) => {
                   event.preventDefault();
                   handleUnenroll(course._id);
                 }}
-                className="btn btn-danger float-end my-2"
+                className="btn btn-danger my-2 float-end"
               >
                 Unenroll
               </button>
@@ -141,12 +138,12 @@ export default function Dashboard({
                   event.preventDefault();
                   handleEnroll(course._id);
                 }}
-                className="btn btn-success float-end my-2"
+                className="btn btn-success my-2 float-end"
               >
                 Enroll
               </button>
             )
-          
+          )}
         </div>
       </Link>
     </div>
