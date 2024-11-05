@@ -124,7 +124,7 @@ export default function Dashboard({
                           event.preventDefault();
                           handleUnenroll(course._id);
                         }}
-                        className="btn btn-danger float-end m-2"
+                        className="btn btn-danger float-end my-2"
                       >
                         Unenroll
                       </button>
@@ -134,7 +134,7 @@ export default function Dashboard({
                           event.preventDefault();
                           handleEnroll(course._id);
                         }}
-                        className="btn btn-success float-end m-2"
+                        className="btn btn-success float-end my-2"
                       >
                         Enroll
                       </button>
