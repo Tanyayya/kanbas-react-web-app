@@ -83,7 +83,7 @@ export default function Dashboard({
       <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
-          {filteredCourses.map((course) => (
+          {displayedCourses.map((course) => (
             <div key={course._id} className="wd-dashboard-course col" style={{ width: "300px" }}>
               <div className="card rounded-3 overflow-hidden h-100">
                 <Link
@@ -124,7 +124,7 @@ export default function Dashboard({
                           event.preventDefault();
                           handleUnenroll(course._id);
                         }}
-                        className="btn btn-danger float-end"
+                        className="btn btn-danger float-end m-2"
                       >
                         Unenroll
                       </button>
@@ -134,7 +134,7 @@ export default function Dashboard({
                           event.preventDefault();
                           handleEnroll(course._id);
                         }}
-                        className="btn btn-success float-end"
+                        className="btn btn-success float-end m-2"
                       >
                         Enroll
                       </button>
