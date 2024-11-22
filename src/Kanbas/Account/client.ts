@@ -26,17 +26,27 @@ export const signin = async (credentials: any) => {
   };
   export const findMyCourses = async () => {
     const { data } = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
-    console.log(data);
+    
     return data;
   };
+  export const findEnrolledCourses = async (userId : any) => {
+    const {data} = await axiosWithCredentials.get(`${USERS_API}/${userId}/enrolled-courses`);
+    return data;
+  }
   export const createCourse = async (course: any) => {
     const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses`, course);
     return data;
   };
+  
   export const findAllCourses=async()=>{
     const {data}=await axiosWithCredentials.get(`http://localhost:4000/api/courses`);
     return data;
   }
+  export const addEnrollment = async (enrollment: any) => {
+    const { data } = await axiosWithCredentials.post(`${USERS_API}/current/enrolled`, enrollment);
+    return data;
+  };
+  
   
   
     

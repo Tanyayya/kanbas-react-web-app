@@ -6,24 +6,17 @@ import LessonControlButtons from '../Modules/LessonControlButtons';
 import { IoEllipsisVertical } from 'react-icons/io5';
 import { BsGripVertical } from 'react-icons/bs';
 import { TfiWrite } from 'react-icons/tfi';
-import * as assignmentsClient from "../Modules/client";
+import * as coursesClient from "../client"
+import * as assignmentClient from "./client"
 import { setAssignments, addAssignment, editAssignment, updateAssignment, deleteAssignment } from './reducer';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function Assignments() {
   const { cid } = useParams(); 
+  
   const dispatch = useDispatch();
-  ;
-  // const fetchAssignments = async () => {
-  //   const assignments = await assignmentsClient.findAssignmentsForCourse(cid as string);
-  //   dispatch(setAssignments(assignments));
-    
-  // };
-  // useEffect(() => {
-  //   fetchAssignments();
-  // }, []);
- 
-
+  
+  
   const { currentUser } = useSelector((state: any) => state.accountReducer); // Get current user
  
   
@@ -33,18 +26,33 @@ export default function Assignments() {
   const courseAssignments = assignments;
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForModules(cid as string);
+    dispatch(setAssignments(assignments));
+    
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+ 
 
-  const handleDeleteClick = (assignmentId: string) => {
-    setAssignmentToDelete(assignmentId);
-    setShowDeleteDialog(true);
+
+  const removeModule = async (courseId: string) => {
+    await assignmentClient.deleteAssignment(courseId);
+    dispatch(deleteAssignment(courseId));
   };
 
-  const confirmDelete = () => {
+
+  const confirmDelete = async () => {
     if (assignmentToDelete) {
-      dispatch(deleteAssignment(assignmentToDelete)); 
+      await removeModule(assignmentToDelete); // Use your delete method
     }
     setShowDeleteDialog(false);
     setAssignmentToDelete(null);
+  };
+  const handleDeleteClick = (assignmentId: string) => {
+    setAssignmentToDelete(assignmentId);
+    setShowDeleteDialog(true);
   };
   
 
@@ -72,8 +80,8 @@ export default function Assignments() {
             </div>
           </div>
         </li>
-        {courseAssignments.length > 0 ? (
-          courseAssignments.map((assignment:any) => (
+        {assignments.length > 0 ? (
+          assignments.map((assignment:any) => (
             <li
               key={assignment._id}
               className="list-group-item p-3 d-flex align-items-center"

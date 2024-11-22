@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { enrollCourse, unenrollCourse } from "./reducer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { addEnrollment, findEnrolledCourses } from "../Account/client";
 
 
 export default function Dashboard({
@@ -23,25 +24,63 @@ export default function Dashboard({
 }) {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = useSelector((state: any) => state.enrollmentReducer);
+  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
 
   const isFaculty = currentUser?.role === "FACULTY";
   const [showAllCourses, setShowAllCourses] = useState(false); 
+  const [displayedCourses, setDisplayedCourses] = useState(allCourses);
+  useEffect(() => {
+    const fetchEnrolledCourses = async () => {
+      if (currentUser?._id) {
+        const data = await findEnrolledCourses(currentUser._id);
+        
+        setEnrolledCourses(data);
+        
+      }
+    };
+    fetchEnrolledCourses();
+  }, [currentUser]);
 
-  const toggleCourses = () => setShowAllCourses(!showAllCourses); 
+  // const toggleCourses = async () => {
+  //   setShowAllCourses(!showAllCourses);
+  //   if (!showAllCourses) {
+  //     const enrolledCourses = await findEnrolledCourses(currentUser._id);
+      
+  //     setDisplayedCourses(enrolledCourses);
+  //   } else {
+  //     setDisplayedCourses(allCourses);
+  //   }
+  // };
 
-  const handleEnroll = (courseId: string) => {
-    dispatch(enrollCourse({ user: currentUser._id, course: courseId }));
+  
+  const toggleCourses = () => {
+    setShowAllCourses(!showAllCourses);
+    setDisplayedCourses(showAllCourses ? allCourses : enrolledCourses);
   };
+  
 
-  const handleUnenroll = (courseId: string) => {
-    dispatch(unenrollCourse({ user: currentUser._id, course: courseId }));
+  const handleEnroll = async (courseId: string) => {
+    if (currentUser?._id) {
+      const enrollment = { userId: currentUser._id, courseId };
+      const updatedEnrolledCourses = await addEnrollment(enrollment);
+      setEnrolledCourses(updatedEnrolledCourses);
+      if (!showAllCourses) setDisplayedCourses(updatedEnrolledCourses);
+    }
   };
-
-  console.log(courses);
-  const displayedCourses = showAllCourses ? allCourses : courses;
-
-
+  console.log(enrolledCourses)
+  // Handle unenroll action
+  const handleUnenroll = async (courseId: string) => {
+    if (currentUser?._id) {
+      const enrollment = { userId: currentUser._id, courseId };
+      // Implement the unenroll logic (e.g., API call to delete enrollment)
+      // Mocking the response for now by filtering the enrolled courses list:
+      const updatedEnrolledCourses = enrolledCourses.filter(
+        (course) => course._id !== courseId
+      );
+      setEnrolledCourses(updatedEnrolledCourses);
+      if (!showAllCourses) setDisplayedCourses(updatedEnrolledCourses);
+    }
+  };
   
 
   return (
@@ -119,7 +158,7 @@ export default function Dashboard({
                     )}
 
                     
-                    {enrollments.some((enrollment: any) => enrollment.course === course._id && enrollment.user === currentUser._id) ? (
+                    {displayedCourses ? (
                       <button
                         onClick={(event) => {
                           event.preventDefault();

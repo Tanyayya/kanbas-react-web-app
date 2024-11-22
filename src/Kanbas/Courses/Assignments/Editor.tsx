@@ -4,13 +4,14 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css"; 
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-//import { addAssignment } from "./reducer";
-import { addAssignment, updateAssignment } from "./reducer"; // Ensure you import updateAssignment
+import * as coursesClient from "../client"
+import * as assignmentClient from "./client"
+import { addAssignment, updateAssignment } from "./reducer"; 
 
 
 export default function AssignmentEditor() {
     const { cid, aid } = useParams();
-    const { currentUser } = useSelector((state: any) => state.accountReducer); // Get current user
+    const { currentUser } = useSelector((state: any) => state.accountReducer); 
     
     const isFaculty = currentUser?.role === "FACULTY";
     
@@ -41,6 +42,16 @@ export default function AssignmentEditor() {
 
     const assignment = assignments.find((a:any) => a.course === cid && a._id === aid) || defaultAssignment;
     const [formData, setFormData] = useState({ ...assignment });
+    const createAssignmentsForCourse = async (cid: string, assignmentData: any) => {
+        if (!cid) return;
+        try {
+            const newAssignment = { ...assignmentData, course: cid };
+            const assignment = await coursesClient.createAssignmentsForCourse(cid, newAssignment);
+            dispatch(addAssignment(assignment)); // Dispatch the new assignment to the store
+        } catch (error) {
+            console.error("Error creating assignment:", error);
+        }
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { id, value, type } = e.target;
@@ -66,15 +77,22 @@ export default function AssignmentEditor() {
         });
     };
     
-
-    const handleSave = () => {
+    const saveModule = async (module: any) => {
+        await assignmentClient.updateAssignment(module);
+        dispatch(updateAssignment(assignment));
+      };
+    
+      const handleSave = async () => {
         if (aid) {
-            dispatch(updateAssignment({ ...formData, _id: aid })); 
+           
+            const updatedAssignment = { ...formData, _id: aid };
+            await saveModule(updatedAssignment);
         } else {
-            const newAssignment = { ...formData, _id: aid || new Date().getTime().toString() };
-            dispatch(addAssignment(newAssignment)); 
+           
+            const newAssignment = { ...formData, _id: new Date().getTime().toString() };
+            await createAssignmentsForCourse(cid!, newAssignment);
         }
-        navigate(`/Kanbas/Courses/${cid}/Assignments`); 
+        navigate(`/Kanbas/Courses/${cid}/Assignments`);
     };
     
     

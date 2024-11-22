@@ -9,17 +9,7 @@ export const updateModule = async (module: any) => {
     const { data } = await axios.put(`${MODULES_API}/${module._id}`, module);
     return data;
   };
-  export const findAssignmentsForCourse = async (moduleId: string) => {
-    const response = await axios
-      .get(`${MODULES_API}/${moduleId}/assignments`);
-    return response.data;
-  };
   
-  export const createAssignmentForModule = async (moduleId: string, assignment: any) => {
-    const response = await axios.post(
-      `${MODULES_API}/${moduleId}/assignments`,
-      assignment
-    );
-    return response.data;
-  };
+
+  
   
