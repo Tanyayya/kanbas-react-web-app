@@ -1,0 +1,8 @@
+.list-group-item-border {
+  color: red;
+  border-left: 2px black solid
+}
+
+.list-group-item-border.active {
+  border-left: 2px black solid; /* Add your desired styles here */
+}
