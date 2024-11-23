@@ -14,6 +14,7 @@ export default function Kanbas() {
 
   const [courses, setCourses] = useState<any[]>([]);
   const [allCourses, setAllCourses] = useState<any[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const fetchCourses = async () => {
     try {
@@ -75,13 +76,14 @@ export default function Kanbas() {
           <Route path="Account/*" element={<Account />} />
           <Route path="Dashboard" element={<ProtectedRoute>
             <Dashboard
-              courses={courses}
+              allCourses={allCourses} 
+              courses={courses}// Pass allCourses
               course={course}
-              allCourses={allCourses}
               setCourse={setCourse}
               addNewCourse={addNewCourse}
               deleteCourse={deleteCourse}
-              updateCourse={updateCourse} />
+              updateCourse={updateCourse}/>
+               
           </ProtectedRoute>} />
           <Route path="Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute>} />
           <Route path="Calendar" element={<h1>Calendar</h1>} />
