@@ -1,6 +1,6 @@
 import axios from "axios";
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
-const COURSES_API = `http://localhost:4000/api/courses`;
+const COURSES_API = `https://kanbas-node-server-app-5z6w.onrender.com/api/courses`;
 export const fetchAllCourses = async () => {
   const { data } = await axios.get(COURSES_API);
   

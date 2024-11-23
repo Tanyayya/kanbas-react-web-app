@@ -2,7 +2,7 @@
 
 // const axiosWithCredentials = axios.create({ withCredentials: true });
 
-// export const ENROLLMENT_API = "http://localhost:4000/api/enrollment";
+// export const ENROLLMENT_API = "https://kanbas-node-server-app-5z6w.onrender.com/api/enrollment";
 
 // export const deleteEnrollment = async (courseId: string) => {
 //     const response = await axiosWithCredentials.delete(`${ENROLLMENT_API}/${courseId}`);
@@ -25,17 +25,15 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 
 
 
-export const ENROLLMENTS_API = "http://localhost:4000/api/enrollments";
-export const enrollCourse = async (courseId: string) => {
-	const response = await axiosWithCredentials.post(
-		"${ENROLLMENTS_API}/current/courses/${courseId}"
-	);
-	return response.data;
-};
+export const ENROLLMENTS_API = "https://kanbas-node-server-app-5z6w.onrender.com/api/enrollments";
+export const enrollUser = async (data: { courseId: string; userId: string }) => {
+    console.log("Payload sent to enrollUser:", data); // Debugging
+    const response = await axios.post(`${ENROLLMENTS_API}`, data);
+    return response.data;
+  };
+  
 
-export const unenrollCourse = async (courseId: string) => {
-	const response = await axiosWithCredentials.delete(
-		"${ENROLLMENTS_API}/current/courses/${courseId}"
-	);
-	return response.data;
-};
+  export const unenrollUser = async (unenrollment: { userId: string; courseId: string }) => {
+    const response = await axios.delete(ENROLLMENTS_API, { data: unenrollment });
+    return response.data;
+  };
