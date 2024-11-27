@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const USERS_API = `http://localhost:4000/api/users`;
+export const USERS_API = `https://kanbas-node-server-app-5z6w.onrender.com/api/users`;
 const axiosWithCredentials = axios.create({ withCredentials: true });
-export const ENROLLMENTS_API = `http://localhost:4000/api/enrollments`;
+export const ENROLLMENTS_API = `https://kanbas-node-server-app-5z6w.onrender.com/api/enrollments`;
 
 
 export const signin = async (credentials: any) => {
