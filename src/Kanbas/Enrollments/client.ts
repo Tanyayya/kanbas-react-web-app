@@ -25,7 +25,7 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 
 
 
-export const ENROLLMENTS_API = "https://kanbas-node-server-app-5z6w.onrender.com/api/enrollments";
+export const ENROLLMENTS_API = "http://localhost:4000/api/enrollments";
 export const enrollUser = async (data: { courseId: string; userId: string }) => {
     console.log("Payload sent to enrollUser:", data); // Debugging
     const response = await axios.post(`${ENROLLMENTS_API}`, data);
