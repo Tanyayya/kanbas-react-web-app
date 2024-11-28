@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: { assignments:any } = {
   assignments: [],
 };
 const assignmentsSlice = createSlice({
@@ -14,7 +14,7 @@ const assignmentsSlice = createSlice({
 
     addAssignment: (state, action) => {
       
-      // state.assignments.push(action.payload); 
+       state.assignments.push(action.payload); 
     },
     deleteAssignment: (state, action) => {
       state.assignments = state.assignments.filter(
@@ -26,9 +26,9 @@ const assignmentsSlice = createSlice({
       ) as any;
     },
     editAssignment: (state, { payload: { id, data } }) => {
-      // state.assignments = state.assignments.map((a) =>
-      //   a._id === id ? { ...a, ...data } : a
-      // );
+      state.assignments = state.assignments.map((a:any) =>
+        a._id === id ? { ...a, ...data } : a
+      );
     },
   },
 });
