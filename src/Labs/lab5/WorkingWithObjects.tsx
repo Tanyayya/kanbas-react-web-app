@@ -32,23 +32,29 @@ export default function WorkingWithObjects() {
         defaultValue={assignment.score} onChange={(e) =>
           setAssignment({ ...assignment, score:Number( e.target.value )})}/>
       <hr />
-      <a
+      
+
+
+<div>
+        <label>
+          <input
+            type="checkbox"
+            className="form-check-input"
+            checked={assignment.completed}
+            onChange={(e) =>
+              setAssignment({ ...assignment, completed: e.target.checked })
+            }
+          />
+          
+        </label>
+        <a
   id="wd-update-assignment-completed"
   className="btn btn-primary float-end"
   href={`${ASSIGNMENT_API_URL}/completed/${assignment.completed}`}
 >
-  Update status
+  Update Status
 </a>
-
-<input
-  className="form-control w-75"
-  id="wd-assignment-completed"
-  type="checkbox" // Fixed here
-  checked={assignment.completed} 
-  onChange={(e) =>
-    setAssignment({ ...assignment, completed: e.target.checked }) 
-  }
-/>
+      </div>
 <hr />
 
       <h4>Retrieving Objects</h4>
