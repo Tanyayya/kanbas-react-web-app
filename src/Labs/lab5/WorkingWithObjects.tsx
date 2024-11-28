@@ -43,7 +43,7 @@ export default function WorkingWithObjects() {
 <input
   className="form-control w-75"
   id="wd-assignment-completed"
-  
+  type="checkbox" // Fixed here
   checked={assignment.completed} 
   onChange={(e) =>
     setAssignment({ ...assignment, completed: e.target.checked }) 
