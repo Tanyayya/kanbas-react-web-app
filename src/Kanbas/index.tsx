@@ -17,18 +17,14 @@ export default function Kanbas() {
   const [allCourses, setAllCourses] = useState<any[]>([]);
   const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const fetchCourses = async () => {
+  const fetchEnrolledCourses = async () => {
     try {
       const courses = await userClient.findMyCourses();
-      
-      setCourses(courses);
+      setEnrolledCourses(courses);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching enrolled courses:", error);
     }
   };
-  useEffect(() => {
-    fetchCourses();
-  }, [currentUser]);
  
   const fetchAllCourses=async()=>{
     try{
@@ -38,9 +34,15 @@ export default function Kanbas() {
       console.log(error);
     }
   };
-  useEffect(()=>{
-    fetchAllCourses();
-  },[]);
+  useEffect(() => {
+    if (currentUser) {
+      fetchAllCourses();
+      fetchEnrolledCourses();
+    } else {
+      setAllCourses([]); // Clear all courses if no user is logged in
+      setEnrolledCourses([]); // Clear enrolled courses
+    }
+  }, [currentUser]);
   
   const [course, setCourse] = useState<any>({
     _id: "0", name: "New Course", number: "New Number",
@@ -49,17 +51,22 @@ export default function Kanbas() {
   });
   const addNewCourse = async () => {
     const newCourse = await userClient.createCourse(course);
-    setCourses([ ...courses, newCourse ]);
+    setAllCourses([ ...allCourses, newCourse ]);
+    await fetchEnrolledCourses();
   };
 
 
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
     setCourses(courses.filter((course) => course._id !== courseId));
+    setEnrolledCourses((prevEnrolled) => prevEnrolled.filter((c) => c._id !== courseId));
+
   };
 
   const updateCourse = async () => {
     await courseClient.updateCourse(course);
+    const updatedEnrolledCourses = await userClient.findMyCourses();
+      setEnrolledCourses(updatedEnrolledCourses);
     setCourses(courses.map((c) => {
         if (c._id === course._id) { return course; }
         else { return c; }
@@ -78,12 +85,14 @@ export default function Kanbas() {
           <Route path="Account/*" element={<Account />} />
           <Route path="Dashboard" element={<ProtectedRoute>
             <Dashboard
-              courses={courses}
+              allCourses={allCourses}
+              enrolledCourses={enrolledCourses} 
               course={course}
               setCourse={setCourse}
               addNewCourse={addNewCourse}
               deleteCourse={deleteCourse}
-              updateCourse={updateCourse} />
+              updateCourse={updateCourse}
+              setEnrolledCourses={setEnrolledCourses} />
                
           </ProtectedRoute>} />
           <Route path="Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute>} />

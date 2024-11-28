@@ -8,7 +8,7 @@ interface Enrollment {
   course: string;
 }
 
-const initialState: Enrollment[] = db.enrollments || []; // Use JSON data as initial state
+const initialState: Enrollment[] = []; // Use JSON data as initial state
 
 const enrollmentsSlice = createSlice({
   name: "enrollments",

@@ -41,7 +41,7 @@ export const signin = async (credentials: any) => {
   };
   
   export const findAllCourses=async()=>{
-    const {data}=await axiosWithCredentials.get(`http://localhost:4000/api/courses`);
+    const {data}=await axiosWithCredentials.get(`https://kanbas-node-server-app-5z6w.onrender.com/api/courses`);
     return data;
   }
   export const addEnrollment = async (enrollment: any) => {
