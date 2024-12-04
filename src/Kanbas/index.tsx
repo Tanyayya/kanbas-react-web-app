@@ -58,7 +58,7 @@ export default function Kanbas() {
 
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
-    setCourses(courses.filter((course) => course._id !== courseId));
+    setAllCourses(courses.filter((course) => course._id !== courseId));
     setEnrolledCourses((prevEnrolled) => prevEnrolled.filter((c) => c._id !== courseId));
 
   };
@@ -67,7 +67,7 @@ export default function Kanbas() {
     await courseClient.updateCourse(course);
     const updatedEnrolledCourses = await userClient.findMyCourses();
       setEnrolledCourses(updatedEnrolledCourses);
-    setCourses(courses.map((c) => {
+    setAllCourses(courses.map((c) => {
         if (c._id === course._id) { return course; }
         else { return c; }
     })
