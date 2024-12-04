@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const USERS_API = `http://localhost:4000/api/users`;
+export const USERS_API = `https://kanbas-node-server-app-1-r717.onrender.com/api/users`;
 const axiosWithCredentials = axios.create({ withCredentials: true });
-export const ENROLLMENTS_API = `http://localhost:4000/api/enrollments`;
+export const ENROLLMENTS_API = `https://kanbas-node-server-app-1-r717.onrender.com/api/enrollments`;
 
 
 export const signin = async (credentials: any) => {
@@ -32,6 +32,7 @@ export const signin = async (credentials: any) => {
     return data;
   }
   export const findCoursesForUser = async (userId: string) => {
+
     const response = await axiosWithCredentials.get(`${USERS_API}/${userId}/courses`);
     return response.data;
   };
@@ -43,7 +44,7 @@ export const signin = async (credentials: any) => {
   };
   
   export const findAllCourses=async()=>{
-    const {data}=await axiosWithCredentials.get(`http://localhost:4000/api/courses`);
+    const {data}=await axiosWithCredentials.get(`https://kanbas-node-server-app-1-r717.onrender.com/api/courses`);
     return data;
   }
   export const addEnrollment = async (enrollment: any) => {
