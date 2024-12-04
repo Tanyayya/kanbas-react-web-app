@@ -77,8 +77,8 @@ export default function AssignmentEditor() {
         });
     };
     
-    const saveModule = async (module: any) => {
-        await assignmentClient.updateAssignment(module);
+    const saveModule = async (assignment: any) => {
+        await assignmentClient.updateAssignment(assignment);
         dispatch(updateAssignment(assignment));
       };
     
