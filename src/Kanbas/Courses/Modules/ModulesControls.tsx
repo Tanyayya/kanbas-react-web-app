@@ -15,7 +15,7 @@ export default function ModulesControls({
 }) {
   // Get current user role from Redux
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const isFaculty = currentUser?.role === "FACULTY"; // Check if user is faculty
+  const isFaculty = currentUser?.role === "ADMIN"; // Check if user is faculty
 
   return (
     <div id="wd-modules-controls" className="text-nowrap">

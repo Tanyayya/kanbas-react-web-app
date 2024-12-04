@@ -21,21 +21,24 @@ export default function Assignments() {
  
   
  
-  const isFaculty = currentUser?.role === "FACULTY";
+  const isFaculty = currentUser?.role === "ADMIN";
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
-  const courseAssignments = assignments;
+
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
+ 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", { day: "2-digit", month: "short" });
+  };
+ 
   const fetchAssignments = async () => {
     const assignments = await coursesClient.findAssignmentsForModules(cid as string);
     dispatch(setAssignments(assignments));
-    
   };
   useEffect(() => {
     fetchAssignments();
   }, []);
- 
-
 
   const removeModule = async (courseId: string) => {
     await assignmentClient.deleteAssignment(courseId);
@@ -98,8 +101,8 @@ export default function Assignments() {
                 <br />
                 <small className="text-muted">
                   <span className="text-danger">{assignment.title}</span> |{" "}
-                  <b>Not available until</b> {assignment.availableDate} at 12:00 am | <br />
-                  <b>Due</b> {assignment.dueDate} at 11:59pm | {assignment.points} pts
+                  <b>Not available until</b> {formatDate(assignment.availableDate)} at 12:00 am | <br />
+                  <b>Due</b> {formatDate(assignment.dueDate)} at 11:59pm | {assignment.points} pts
                 </small>
               </div>
               {isFaculty && (

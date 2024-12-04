@@ -13,7 +13,7 @@ export default function AssignmentEditor() {
     const { cid, aid } = useParams();
     const { currentUser } = useSelector((state: any) => state.accountReducer); 
     
-    const isFaculty = currentUser?.role === "FACULTY";
+    const isFaculty = currentUser?.role === "ADMIN";
     
   
   // Check if current user has the FACULTY role

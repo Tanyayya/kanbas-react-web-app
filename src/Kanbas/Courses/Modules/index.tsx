@@ -42,7 +42,7 @@ export default function Modules() {
   };
 
   // Check if current user has the FACULTY role
-  const isFaculty = currentUser?.role === "FACULTY";
+  const isFaculty = currentUser?.role === "ADMIN";
 
   return (
     <div className="w-100 p-5">

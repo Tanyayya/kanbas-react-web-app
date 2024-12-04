@@ -11,19 +11,19 @@ export default function PathParameters() {
       <input className="form-control mb-2" id="wd-path-parameter-b" type="number" defaultValue={b}
              onChange={(e) => setB(e.target.value)}/>
       <a className="btn btn-primary me-2" id="wd-path-parameter-add"
-         href={`https://kanbas-node-server-app-5z6w.onrender.com/lab5/add/${a}/${b}`}>
+         href={`http://localhost:4000/lab5/add/${a}/${b}`}>
          Add {a} + {b}
       </a>
       <a className="btn btn-danger me-2" id="wd-path-parameter-subtract" 
-         href={`https://kanbas-node-server-app-5z6w.onrender.com/lab5/subtract/${a}/${b}`}>
+         href={`http://localhost:4000/lab5/subtract/${a}/${b}`}>
          Substract {a} - {b}
       </a>
       <a className="btn btn-primary me-2" id="wd-path-parameter-add"
-         href={`https://kanbas-node-server-app-5z6w.onrender.com/lab5/multiply/${a}/${b}`}>
+         href={`http://localhost:4000/lab5/multiply/${a}/${b}`}>
          Multiply {a} * {b}
       </a>
       <a className="btn btn-danger me-2" id="wd-path-parameter-subtract" 
-         href={`https://kanbas-node-server-app-5z6w.onrender.com/lab5/divid/${a}/${b}`}>
+         href={`http://localhost:4000/lab5/divid/${a}/${b}`}>
          Divide {a} / {b}
       </a>
       <hr />

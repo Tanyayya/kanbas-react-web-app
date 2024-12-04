@@ -1,20 +1,24 @@
 import CoursesNavigation from "./Navigation";
 import { Navigate, Route, Routes, useLocation } from "react-router";
+
 import Modules from "./Modules";
 import Assignments from "./Assignments";
 import Home from "./Home";
 import { FaAlignJustify } from "react-icons/fa";
 import AssignmentEditor from "./Assignments/Editor";
-import PeopleTable from "./People/Table";
+
 
 import { useParams } from "react-router";
+import CourseStudent from "./People/courseStudents";
+
 
 
 export default function Courses({ courses }: { courses: any[]; }) {
+  
   const { cid } = useParams(); // Retrieve course id from URL
   const course = courses.find((course) => course._id === cid); // Find the selected course
   const { pathname } = useLocation();
-  const pathSegments = pathname.split("/").slice(3).filter(Boolean);
+  const pathSegments = pathname.split("/").slice(4).filter(Boolean);
   return (
     <div id="wd-courses">
       <h3 className="text-danger">
@@ -22,6 +26,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
         {course && course.name} 
         {pathSegments.map((param, index) => (
           <span key={index}>
+            {` > ${course.number}`}
             {` > ${param}`} {/* Display each segment with the greater-than symbol */}
           </span>
         ))}
@@ -43,7 +48,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
             
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="Assignments/new" element={<AssignmentEditor />} />
-            <Route path="People" element={<PeopleTable />} />
+            <Route path="People" element={<CourseStudent />} />
           </Routes>
         </div>
       </div>

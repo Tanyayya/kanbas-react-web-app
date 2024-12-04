@@ -6,7 +6,7 @@ export default function ModuleObjects() {
     description: "Create a NodeJS server with ExpressJS",
     due: "2021-10-10", completed: false, score: 0,
   });
-  const MODULE_API_URL = `https://kanbas-node-server-app-5z6w.onrender.com/lab5/module`
+  const MODULE_API_URL = `http://localhost:4000/lab5/module`
   return (
     <div>
       <h3 id="wd-module-objects">Module Objects</h3>
@@ -31,12 +31,12 @@ export default function ModuleObjects() {
       <hr />
       <h4>Retrieving Objects</h4>
       <a id="wd-retrieve-module" className="btn btn-primary"
-         href={`https://kanbas-node-server-app-5z6w.onrender.com/lab5/module`}>
+         href={`http://localhost:4000/lab5/module`}>
         Get Module
       </a><hr/>
       <h4>Retrieving Properties</h4>
       <a id="wd-retrieve-module-module" className="btn btn-primary"
-         href={`https://kanbas-node-server-app-5z6w.onrender.com/lab5/module/name`}>
+         href={`http://localhost:4000/lab5/module/name`}>
         Get Module Name
       </a><hr/>
     </div>
