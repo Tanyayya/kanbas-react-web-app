@@ -10,7 +10,7 @@ import Session from "./Account/Session";
 import * as userClient from "./Account/client";
 import { useSelector } from "react-redux";
 import * as courseClient from "./Courses/client";
-
+import { enrollIntoCourse, enrollUser, unenrollFromCourse, unenrollUser } from "../Kanbas/Account/client";
 
 export default function Kanbas() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -22,9 +22,9 @@ export default function Kanbas() {
  const findCoursesForUser = async () => {
    try {
     
-     const courses = await userClient.findCoursesForUser(currentUser._id);
+     const courses = await userClient.findCoursesForUser(currentUser);
     
-     setCourses(courses);
+     setEnrolledCourses(courses);
    } catch (error) {
      console.error(error);
    }
@@ -35,20 +35,20 @@ export default function Kanbas() {
       const allCourses = await courseClient.fetchAllCourses();
         
       const enrolledCourses = await userClient.findCoursesForUser(
-        currentUser._id
+        currentUser
         
       );
      
-      console.log(enrolledCourses)
+      
       const courses = allCourses.map((course: any) => {
-        console.log(currentUser._id)
+       
         if (enrolledCourses.find((c: any) => c._id === course._id)) {
           return { ...course, enrolled: true };
         } else {
           return course;
         }
       });
-     
+      console.log()
       setCourses(allCourses);
     } catch (error) {
       console.error(error);
@@ -57,6 +57,7 @@ export default function Kanbas() {
   useEffect(() => {
     if (currentUser && currentUser._id) {
       fetchCourses();
+     
     }
   }, [currentUser]);
 
@@ -69,11 +70,7 @@ export default function Kanbas() {
       setEnrolledCourses([]); 
     }
 
-    // if (enrolling) {
-    //   fetchCourses();
-    // } else {
-    //   findCoursesForUser();
-    // }
+  
  
   }, [currentUser,enrolling]);
 
@@ -94,7 +91,8 @@ export default function Kanbas() {
     }
   };
   useEffect(()=>{
-    fetchAllCourses();
+   
+    fetchCourses();
   },[]);
 
  
@@ -115,6 +113,9 @@ export default function Kanbas() {
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
     setAllCourses(allCourses.filter((course) => course._id !== courseId));
+    await unenrollFromCourse(  currentUser._id ,courseId);
+      setEnrolledCourses(enrolledCourses.filter((c:any) => c._id !== courseId));
+   
     
 
   };
@@ -141,7 +142,10 @@ export default function Kanbas() {
     );
     const updatedEnrolledCourses = await userClient.findCoursesForUser(currentUser);
       setEnrolledCourses(updatedEnrolledCourses);
+      console.log(enrolledCourses)
+     
   };
+
   
     return (
       <Session>
