@@ -19,7 +19,7 @@ export const updateTodo = async (todo: any) => {
   };
   
 
-const TODOS_API = `http://localhost:4000/lab5/todos`;
+const TODOS_API = `https://kanbas-node-server-app-5z6w.onrender.com/lab5/todos`;
 export const fetchTodos = async () => {
   const response = await axios.get(TODOS_API);
   return response.data;
