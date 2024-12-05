@@ -2,7 +2,7 @@ import axios from "axios";
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
-const ASSIGNMENT_API = `https://kanbas-node-server-app-7-q75f.onrender.com/api/assignments`;
+const ASSIGNMENT_API = `http://localhost:4000/api/assignments`;
 export const deleteAssignment = async (assignmentId: string) => {
  const response = await axiosWithCredentials.delete(`${ASSIGNMENT_API}/${assignmentId}`);
  return response.data;

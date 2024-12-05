@@ -2,7 +2,7 @@ import axios from "axios";
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
-const MODULES_API = `https://kanbas-node-server-app-7-q75f.onrender.com/api/modules`;
+const MODULES_API = `http://localhost:4000/api/modules`;
 export const deleteModule = async (moduleId: string) => {
  const response = await axiosWithCredentials.delete(`${MODULES_API}/${moduleId}`);
  return response.data;
