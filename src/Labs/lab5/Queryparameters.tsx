@@ -15,19 +15,19 @@ export default function QueryParameters() {
          defaultValue={b} type="number"
          onChange={(e) => setB(e.target.value)} />
   <a id="wd-query-parameter-add"
-     href={`https://kanbas-node-server-app-1-r717.onrender.com/lab5/calculator?operation=add&a=${a}&b=${b}`}>
+     href={`https://kanbas-node-server-app-7-q75f.onrender.com/lab5/calculator?operation=add&a=${a}&b=${b}`}>
     Add {a} + {b}
   </a>
   <a id="wd-query-parameter-subtract"
-     href={`https://kanbas-node-server-app-1-r717.onrender.com/lab5/calculator?operation=subtract&a=${a}&b=${b}`}>
+     href={`https://kanbas-node-server-app-7-q75f.onrender.com/lab5/calculator?operation=subtract&a=${a}&b=${b}`}>
     Substract {a} - {b}
   </a>
   <a id="wd-query-parameter-add"
-     href={`https://kanbas-node-server-app-1-r717.onrender.com/lab5/calculator?operation=multiply&a=${a}&b=${b}`}>
+     href={`https://kanbas-node-server-app-7-q75f.onrender.com/lab5/calculator?operation=multiply&a=${a}&b=${b}`}>
     Multiply {a} * {b}
   </a>
   <a id="wd-query-parameter-subtract"
-     href={`https://kanbas-node-server-app-1-r717.onrender.com/lab5/calculator?operation=divide&a=${a}&b=${b}`}>
+     href={`https://kanbas-node-server-app-7-q75f.onrender.com/lab5/calculator?operation=divide&a=${a}&b=${b}`}>
     Divide {a} / {b}
   </a>
   
