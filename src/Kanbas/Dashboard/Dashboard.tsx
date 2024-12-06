@@ -57,7 +57,7 @@ export default function Dashboard({
   const isFaculty = currentUser?.role === "ADMIN";
   
   const displayedCourses = showAllCourses ? allCourses : enrolledCourses;
-  console.log(enrolledCourses)
+  
   
   return (
     <div id="wd-dashboard">

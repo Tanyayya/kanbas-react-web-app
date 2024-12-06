@@ -6,7 +6,7 @@ export default function WorkingWithObjects() {
     description: "Create a NodeJS server with ExpressJS",
     due: "2021-10-10", completed: false, score: 0,
   });
-  const ASSIGNMENT_API_URL = `http://localhost:4000/lab5/assignment`
+  const ASSIGNMENT_API_URL = `https://kanbas-node-server-app-2-z0sr.onrender.com/lab5/assignment`
   return (
     <div>
       <h3 id="wd-working-with-objects">Working With Objects</h3>
@@ -59,12 +59,12 @@ export default function WorkingWithObjects() {
 
       <h4>Retrieving Objects</h4>
       <a id="wd-retrieve-assignments" className="btn btn-primary"
-         href={`http://localhost:4000/lab5/assignment`}>
+         href={`https://kanbas-node-server-app-2-z0sr.onrender.com/lab5/assignment`}>
         Get Assignment
       </a><hr/>
       <h4>Retrieving Properties</h4>
       <a id="wd-retrieve-assignment-title" className="btn btn-primary"
-         href={`http://localhost:4000/lab5/assignment/title`}>
+         href={`https://kanbas-node-server-app-2-z0sr.onrender.com/lab5/assignment/title`}>
         Get Title
       </a><hr/>
     </div>
