@@ -1,6 +1,6 @@
 import axios from "axios";
 const axiosWithCredentials = axios.create({ withCredentials: true });
-const COURSES_API = `https://kanbas-node-server-app-2-z0sr.onrender.com/api/courses`;
+const COURSES_API = `http://localhost:4000/api/courses`;
 export const fetchAllCourses = async () => {
   const { data } = await axiosWithCredentials.get(COURSES_API);
   
@@ -50,6 +50,18 @@ export const findUsersForCourse = async (courseId: string) => {
   const response = await axios.get(`${COURSES_API}/${courseId}/users`);
   return response.data;
  };
+ export const findQuizzesForCourses = async (courseId: string) => {
+  const response = await axiosWithCredentials
+    .get(`${COURSES_API}/${courseId}/quizzes`);
+  return response.data;
+};
+export const createQuizzesForCourse = async (courseId: string, quiz: any) => {
+  const response = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/quizzes`,
+    quiz
+  );
+  return response.data;
+};
 
 
 

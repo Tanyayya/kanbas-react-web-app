@@ -5,7 +5,7 @@ export default function EnvironmentVariables() {
     <div id="wd-environment-variables">
       <h3>Environment Variables</h3>
       
-      <p>Remote Server: https://kanbas-node-server-app-2-z0sr.onrender.com</p><hr/>
+      <p>Remote Server: http://localhost:4000</p><hr/>
     </div>
   );
 }
