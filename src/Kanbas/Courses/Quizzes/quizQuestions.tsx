@@ -20,7 +20,7 @@ const QuizQuestions: React.FC = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const defaultQuiz = {
-    quiz: "",
+    quiz: qid,
     type: "Multiple Choice",
     points: 1,
     questionText: "",
@@ -34,6 +34,7 @@ const QuizQuestions: React.FC = () => {
       (a: any) => a.quiz === qid && a._id === questionId
     ) || defaultQuiz;
   const [newQuestion, setNewQuestion] = useState({ ...question });
+  
 
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -109,7 +110,13 @@ const QuizQuestions: React.FC = () => {
 
   const saveQuestion = async (question: any) => {
     await quizClient.updateQuestion(question);
-    dispatch(updateQuestions(question));
+    dispatch(updateQuestions({
+        ...question,
+        _id: question._id.toString() // Convert ObjectId to string
+      }));
+      setQuestionId(null);
+      setNewQuestion(defaultQuiz)
+      
   };
 
   const createQuestionsForQuiz = async (qid: string, assignmentData: any) => {
@@ -130,6 +137,8 @@ const QuizQuestions: React.FC = () => {
 
   const handleSaveNewQuestion = async () => {
     console.log(questionId)
+    
+    console.log(qid)
     if (questionId) {
       const updatedOuestion = { ...newQuestion, _id: questionId };
       await saveQuestion(updatedOuestion);
@@ -346,6 +355,9 @@ const QuizQuestions: React.FC = () => {
                     className="btn btn-sm btn-primary me-2"
                     onClick={() => {
                       setActiveQuestion(question);
+                      setNewQuestion({
+                        ...question, 
+                      });
                       setQuestionId(question._id);
                       setShowModal(true);
                     }}
