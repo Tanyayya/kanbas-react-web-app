@@ -79,21 +79,46 @@ export const publishQuiz = async (quizId: string, isPublished: boolean) => {
     throw error;
   }
 };
-export const createAttempt = async (quizId: string, userID: string, attempt: {
+
+export const createAttempt = async (
+  quizId: string,
+  userID: string,
+  attempt: {
   attemptNumber: number;
   answers: { question: string; selectedAnswer: string; correct: Boolean  }[]; // Array of answers
   score: number; // Total score
   completedAt: Date;
-}): Promise<any> => {
+}
+): Promise<any> => {
   try {
-    console.log(attempt);
+    // Post attempt data to the API
     const response = await axios.post(`${QUIZ_API}/${quizId}/attempt`, {
       ...attempt,
-      student: userID,  // Include the student (user) ID in the request body
+      student: userID, 
     });
-    return response.data;
-  } catch (error) {
+
+    return response.data; 
+  } catch (error: any) {
     console.error(`Error creating attempt for quiz ${quizId}:`, error);
+
+    
+    throw new Error(
+      error.response?.data?.error ||
+        "An unexpected error occurred while creating the attempt."
+    );
+  }
+};
+export const getLastAttempt = async (quizId: string, userId: string) => {
+  try {
+    const { data } = await axiosWithCredentials.get(
+      `${QUIZ_API}/${quizId}/user/${userId}/attempts/last`
+    );
+    return data; // Return the last attempt data
+  } catch (error: any) {
+    console.error("Error fetching last attempt:", error);
     throw error;
   }
 };
+
+
+

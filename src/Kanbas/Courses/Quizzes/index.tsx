@@ -126,23 +126,25 @@ export default function Quizzes() {
               </div>
              
               <div className="float-end me-3 d-flex align-items-center fs-5">
-      {assignment.published? (<GreenCheckmark/>):(  <span className="position-relative d-inline-block" style={{ width: "1.5em", height: "1.5em" }}>
-      
-      <FaBan
-        className="text-danger position-absolute"
-        style={{ top: 3, left: 0, fontSize: "1.1em" }}
-      />
-    </span>)}
-      <div className="align-content-center justify-content-end">
-                                {/* {(currentUser.role === 'FACULTY' || currentUser.role === 'ADMIN') && ( */}
-                                    <QuizLessonControlButtons courseId={cid || ''} quizId={assignment._id.toString()} published={assignment.isPublished} />
-                                    {/* )} */}
-                                </div>
-      
-        
-      
-      
-     
+              {currentUser.role === 'FACULTY' && (
+  <>
+    {assignment.published ? (
+      <GreenCheckmark />
+    ) : (
+      <span className="position-relative d-inline-block" style={{ width: "1.5em", height: "1.5em" }}>
+        <FaBan
+          className="text-danger position-absolute"
+          style={{ top: 3, left: 0, fontSize: "1.1em" }}
+        />
+      </span>
+    )}
+
+    <div className="align-content-center justify-content-end">
+      {/* Render QuizLessonControlButtons only for Faculty */}
+      <QuizLessonControlButtons courseId={cid || ''} quizId={assignment._id.toString()} published={assignment.isPublished} />
+    </div>
+  </>
+)}
     </div>
             </li>
           ))

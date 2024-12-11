@@ -27,7 +27,7 @@ const QuizDetails = () => {
   };
   const handleStartQuiz = () => {
     // Navigate to the quiz attempt page for students
-    navigate(`/quiz/${qid}/start`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/view`)
   };
 
 
@@ -64,48 +64,53 @@ const QuizDetails = () => {
       margin: '0 auto',
       textAlign: 'center' // Center all text inside the container
     }}>
-      <div>
-          <button 
-                onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/view`)}
-
-          style={{
-            
-            margin: '10px 2px',
-            padding: '8px 15px',
-            fontSize: '14px',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            backgroundColor: '#f0f0f0',
-            border: '1px solid #ddd'
-          }}>Preview</button>
-          <button
+        
+        {currentUser.role === 'FACULTY' && (
+  <div>
+    <button
+      onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/view`)}
+      style={{
+        margin: '10px 2px',
+        padding: '8px 15px',
+        fontSize: '14px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        backgroundColor: '#f0f0f0',
+        border: '1px solid #ddd'
+      }}
+    >
+      Preview
+    </button>
+    <button
       onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`)}
       style={{
-        marginLeft: "10px",
-        padding: "8px 15px",
-        fontSize: "14px",
-        borderRadius: "5px",
-        cursor: "pointer",
-        backgroundColor: "#ffa500",
-        color: "#fff",
-        border: "1px solid #ddd",
+        marginLeft: '10px',
+        padding: '8px 15px',
+        fontSize: '14px',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        backgroundColor: '#ffa500',
+        color: '#fff',
+        border: '1px solid #ddd',
       }}
     >
       Edit
     </button>
-        </div>
+  </div>
+)}
       <div style={{
         display: 'flex',
         justifyContent: 'center', // Center the content horizontally
         alignItems: 'center',
         flexDirection: 'column' // Stack the elements vertically
       }}>
+        
         <h3 style={{ fontSize: '24px', fontWeight: '600' }}>{quiz.title}</h3>
        
         
       </div>
 
-      {isFaculty ? (
+      
         <div style={{ marginTop: '20px' }}>
           <ul style={{ listStyle: 'none', padding: '0', margin: '20px 0' }}>
             <li style={{ marginBottom: '10px', fontSize: '16px' }}><strong>Quiz Type:</strong> {quiz.type}</li>
@@ -122,7 +127,7 @@ const QuizDetails = () => {
 
           </ul>
         </div>
-      ) : (
+        {currentUser.role != 'FACULTY' && (
         <div>
           <button style={{
             padding: '12px 20px',
@@ -132,11 +137,24 @@ const QuizDetails = () => {
             borderRadius: '5px',
             cursor: 'pointer',
             fontSize: '16px',
-            width: '100%',
+            width: '50%',
             marginTop: '20px'
           }} onClick={handleStartQuiz}>Start Quiz</button>
+          <br></br>
+          <button style={{
+            padding: '12px 20px',
+            backgroundColor: '#4caf50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            width: '50%',
+            marginTop: '20px'
+          }}onClick={()=> navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/results`)}>Quiz Results</button>
         </div>
-      )}
+        )}
+      
 
       {/* Table for Date/Time Details */}
       <div style={{ marginTop: "20px" }}>
