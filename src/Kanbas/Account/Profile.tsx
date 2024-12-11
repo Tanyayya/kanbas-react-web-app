@@ -18,6 +18,7 @@ export default function Profile() {
   const fetchProfile = () => {
     if (!currentUser) return navigate("/Kanbas/Account/Signin");
     setProfile(currentUser);
+    console.log(currentUser)
   };
   const signout = async () => {
     await client.signout();
@@ -39,8 +40,13 @@ export default function Profile() {
                  onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}/>
           <input defaultValue={profile.lastName} id="wd-lastname" className="form-control mb-2"
                  onChange={(e) => setProfile({ ...profile, lastName:  e.target.value })}/>
-          <input defaultValue={profile.dob} id="wd-dob" className="form-control mb-2"
-                 onChange={(e) => setProfile({ ...profile, dob: e.target.value })} type="date"/>
+          <input
+  defaultValue={profile.dob ? profile.dob.split("T")[0] : ""}
+  id="wd-dob"
+  className="form-control mb-2"
+  onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
+  type="date"
+/>
           <input defaultValue={profile.email} id="wd-email" className="form-control mb-2"
                  onChange={ (e) => setProfile({ ...profile, email: e.target.value })}/>
           <select onChange={(e) => setProfile({ ...profile, role:  e.target.value })}

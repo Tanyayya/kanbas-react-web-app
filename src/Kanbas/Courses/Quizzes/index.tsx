@@ -1,39 +1,61 @@
-import { useParams ,Link} from "react-router-dom";
+import { useParams ,Link, useNavigate} from "react-router-dom";
 import QuizControls from "./QuizControl";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteQuizz, setQuizzes } from "./reducer";
 import * as coursesClient from "../client"
 import * as quizClient from "./client"
+import { addQuizzes, updateQuiz } from "./reducer";
+import { FaBan } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { IoEllipsisVertical } from 'react-icons/io5';
 import { BsGripVertical } from 'react-icons/bs';
 import { TfiWrite } from 'react-icons/tfi';
 import {  FaPlus, FaTrash } from 'react-icons/fa';
 import LessonControlButtons from '../Modules/LessonControlButtons';
+import GreenCheckmark from "../Modules/GreenCheckmark";
+import QuizLessonControlButtons from "./QuizLessonControlButtons";
 export default function Quizzes() {
     const { cid } = useParams(); 
+   
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", { day: "2-digit", month: "short" });
       };
   
   const dispatch = useDispatch();
+  const [showMenu, setShowMenu] = useState<string | null>(null);
+    const toggleMenu = (quizId: string) => {
+    setShowMenu(showMenu === quizId ? null : quizId);
+  };
+
   const { currentUser } = useSelector((state: any) => state.accountReducer); // Get current user
   const isFaculty = currentUser?.role === "ADMIN";
   const { quizzes } = useSelector((state: any) => state.quizzesReducer);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const navigate = useNavigate();
   const [quizToDelete, setQuizToDelete] = useState<string | null>(null);
   const fetchQuizzes = async () => {
     const quizzes = await coursesClient.findQuizzesForCourses(cid as string);
     dispatch(setQuizzes(quizzes));
   };
-  useEffect(() => {
-    fetchQuizzes();
-  }, []);
+
   const handleDeleteClick = (quizId: string) => {
     setQuizToDelete(quizId);
     setShowDeleteDialog(true);
   };
+  const handleEdit = (e: React.MouseEvent, quizId: string) => {
+    e.stopPropagation(); // Prevent the click from propagating to the parent element
+    navigate(`${quizId}`);
+    
+  };
+  
+
+  
+  
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+
   const removeModule = async (courseId: string) => {
     await quizClient.deleteQuiz(courseId);
     dispatch(deleteQuizz(courseId));
@@ -49,6 +71,19 @@ export default function Quizzes() {
     setShowDeleteDialog(false);
     setQuizToDelete(null);
   };
+  const getAvailabilityStatus = (availableDate: string, dueDate: string) => {
+    const currentDate = new Date();
+    const availableDateObj = new Date(availableDate);
+    const dueDateObj = new Date(dueDate);
+
+    if (currentDate < availableDateObj) {
+      return `Not available until ${formatDate(availableDateObj.toLocaleDateString())} at 12:00 am`;
+    } else if (currentDate > dueDateObj) {
+      return "Closed";
+    } else {
+      return "Available";
+    }
+  };
     return (
         <div>
         <QuizControls cid={cid}/>
@@ -58,14 +93,10 @@ export default function Quizzes() {
           <div className="wd-title p-3 d-flex justify-content-between align-items-center bg-secondary">
             <div className="d-flex align-items-center">
               <BsGripVertical className="me-2 fs-3" />
-              <span className="ms-2">Week 1 Assignments</span>
+              <span className="ms-2">Assignment Quizzes</span>
             </div>
             <div className="d-flex align-items-center">
-              <span className="text-muted me-4 border rounded-pill border-black p-2">
-                40% of Total
-              </span>
-              <FaPlus className="me-2" aria-label="Add Assignment" />
-              <IoEllipsisVertical className="fs-4" aria-label="More options" />
+              
             </div>
           </div>
         </li>
@@ -79,7 +110,8 @@ export default function Quizzes() {
               <TfiWrite className="me-3 text-success fs-4" style={{fontSize:'2rem'}}/>
               <div className="flex-grow-1">
                 <Link
-                  to={`${assignment._id}`}
+                  to={`${assignment._id}/details`}
+                  
                   className="text-decoration-none text-dark"
                 >
                   <span className="fw-bold fs-5">{assignment.title}</span>
@@ -87,22 +119,35 @@ export default function Quizzes() {
                 <br />
                 <small className="text-muted">
                   <span className="text-danger">{assignment.title}</span> |{" "}
-                  <b>Not available until</b> {formatDate(assignment.availableDate)} at 12:00 am | <br />
+                  Availablilty - 
+                  <b>{getAvailabilityStatus(assignment.availableDate, assignment.dueDate)}</b> | <br />
                   <b>Due</b> {formatDate(assignment.dueDate)} at 11:59pm | {assignment.points} pts
                 </small>
               </div>
-              {isFaculty && ( 
-        <FaTrash 
-          className="text-danger me-3 mb-1 fs-5"  
-          onClick={() => handleDeleteClick(assignment._id)} 
-          style={{ cursor: 'pointer' }} 
-        />
-      )}
-              <LessonControlButtons />
+             
+              <div className="float-end me-3 d-flex align-items-center fs-5">
+      {assignment.published? (<GreenCheckmark/>):(  <span className="position-relative d-inline-block" style={{ width: "1.5em", height: "1.5em" }}>
+      
+      <FaBan
+        className="text-danger position-absolute"
+        style={{ top: 3, left: 0, fontSize: "1.1em" }}
+      />
+    </span>)}
+      <div className="align-content-center justify-content-end">
+                                {/* {(currentUser.role === 'FACULTY' || currentUser.role === 'ADMIN') && ( */}
+                                    <QuizLessonControlButtons courseId={cid || ''} quizId={assignment._id.toString()} published={assignment.isPublished} />
+                                    {/* )} */}
+                                </div>
+      
+        
+      
+      
+     
+    </div>
             </li>
           ))
         ) : (
-          <p>No assignments available for this course.</p>
+          <p>No Quizzes available for this course.</p>
         )}
       </ul>
       {showDeleteDialog && (

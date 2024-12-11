@@ -22,14 +22,15 @@ export default function QuizEditor() {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("details");
   const defaultQuiz = {
-    title: "",
+    title: "Quiz",
     description: "",
-    quizType: "Graded Quiz",
+    type: "Graded Quiz",
     points: 0,
     assignmentGroup: "Quizzes",
     shuffleAnswers: false,
     timeLimit: 20,
     multipleAttempts: false,
+    maxAttempts:1,
     showCorrectAnswers: "Never",
     accessCode: "",
     oneQuestionAtATime: false,
@@ -71,11 +72,12 @@ const saveQuiz = async (course: any) => {
        
         const updatedquiz = { ...formData, _id: qid };
           await saveQuiz(updatedquiz);
+          console.log(quiz);
     } else {
        
         const newQuiz = { ...formData, _id: new Date().getTime().toString() };
         await createQuizzesForCourse(cid!, newQuiz);
-        console.log(newQuiz)
+        
     }
     navigate(`/Kanbas/Courses/${cid}/Quizzes`);
 };
@@ -83,19 +85,37 @@ const saveQuiz = async (course: any) => {
 //     await qui.updateAssignment(module);
 //     dispatch(updateAssignment(assignment));
 //   };
-  const handleSaveAndPublish = async () => {
-    try {
-      const savedQuiz = await coursesClient.createQuizzesForCourse(cid!, {
+const handleSaveAndPublish = async () => {
+  try {
+    let savedQuiz;
+
+    if (qid) {
+      // If qid exists, update the quiz's published status
+      savedQuiz = await quizClient.updateQuiz({
+        id: qid,
         ...formData,
         published: true,
       });
-      dispatch(addQuizzes(savedQuiz));
-      
-      navigate(`/Kanbas/courses/${cid}/quizzes`);
-    } catch (err) {
-      console.error("Failed to save and publish quiz:", err);
+    } else {
+      // Otherwise, create a new quiz
+      savedQuiz = await coursesClient.createQuizzesForCourse(cid!, {
+        ...formData,
+        published: true,
+      });
     }
-  };
+
+    // Dispatch the updated quiz to the store
+    dispatch(addQuizzes(savedQuiz));
+
+    console.log(savedQuiz);
+
+    // Navigate to the quizzes list
+    navigate(`/Kanbas/courses/${cid}/quizzes`);
+  } catch (err) {
+    console.error("Failed to save and publish quiz:", err);
+  }
+};
+
 
   const handleCancel = () => {
     navigate(`/Kanbas/courses/${cid}/quizzes`);
@@ -153,8 +173,8 @@ const saveQuiz = async (course: any) => {
             <label className="form-label">Quiz Type</label>
             <select
               className="form-select"
-              name="quizType"
-              value={formData.quizType}
+              name="type"
+              value={formData.type}
               onChange={handleInputChange}
             >
               <option>Graded Quiz</option>
@@ -240,7 +260,19 @@ const saveQuiz = async (course: any) => {
             />
             </div>
           </div>
-
+          <div className="row mb-3 align-items-center">
+          <div className="col-md-5 text-end">
+            <label className="form-label">Maximum Attempts</label>
+            </div>
+            <div className="col-md-7">
+            <input
+              type="number"
+              name="maxAttempts"
+              value={formData.maxAttempts}
+              onChange={handleInputChange}
+            />
+            </div>
+          </div>
           {/* Show Correct Answers */}
           <div className="row mb-3 align-items-center">
           <div className="col-md-5 text-end">
@@ -330,7 +362,10 @@ const saveQuiz = async (course: any) => {
                     <label htmlFor="dueDate" className="form-label">Due Date</label>
                 </div>
                 <div className="col-md-7">
-                    <input id="dueDate" type="date" className="form-control" value={formData.dueDate} onChange={handleInputChange} />
+                <input
+                            type="date"
+                            id="wd-due-date"
+                            className="form-control mb-3" name="dueDate" value={formData.dueDate ? formData.dueDate.split("T")[0] : ""} onChange={handleInputChange}/>
                 </div>
             </div>
 
@@ -339,7 +374,12 @@ const saveQuiz = async (course: any) => {
                     <label htmlFor="availableDate" className="form-label">Available From</label>
                 </div>
                 <div className="col-md-7">
-                    <input id="availableDate" type="date" className="form-control" value={formData.availableDate} onChange={handleInputChange} />
+                    <input name="availableDate" value={formData.availableDate ? formData.availableDate.split("T")[0] : ""}
+  id="wd-dob"
+  className="form-control mb-2"
+  
+  type="date" 
+    onChange={handleInputChange} />
                 </div>
             </div>
             <div className="row mb-3 align-items-center">
@@ -347,7 +387,7 @@ const saveQuiz = async (course: any) => {
                     <label htmlFor="dueDate" className="form-label">Until Date</label>
                 </div>
                 <div className="col-md-7">
-                    <input id="dueDate" type="date" className="form-control" value={formData.untilDate} onChange={handleInputChange} />
+                    <input id="dueDate" name="untilDate" type="date" className="form-control" value={formData.untilDate ? formData.untilDate.split("T")[0] : ""} onChange={handleInputChange} />
                 </div>
             </div>
           <button type="button" className="btn btn-primary me-2" onClick={handleSave}>

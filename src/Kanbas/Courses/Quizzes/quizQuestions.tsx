@@ -20,12 +20,13 @@ const QuizQuestions: React.FC = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const defaultQuiz = {
+    title:"",
     quiz: qid,
     type: "Multiple Choice",
     points: 1,
     questionText: "",
     choices: [{ text: "", correct: false }],
-    correctAnswer: "",
+    
   };
 
   const { questions } = useSelector((state: any) => state.questionsReducer);
@@ -62,11 +63,15 @@ const QuizQuestions: React.FC = () => {
   };
 
   const handleAddChoice = () => {
-    setNewQuestion((prev:any) => ({
+    setNewQuestion((prev: any) => ({
       ...prev,
-      choices: [...prev.choices, { id: Date.now(), text: "", correct: false }],
+      choices: [
+        ...prev.choices,
+        { text: "", correct: false }, // Default new choice
+      ],
     }));
   };
+  
 
   const handleDeleteChoice = (index: number) => {
     const updatedChoices = [...newQuestion.choices];
@@ -81,7 +86,7 @@ const QuizQuestions: React.FC = () => {
         ...choice,
         correct: i === index,
       })),
-      correctAnswer: prev.choices[index].text,
+     
     }));
   };
 
@@ -199,6 +204,17 @@ const QuizQuestions: React.FC = () => {
                   </select>
                 </div>
                 <div className="mb-3">
+                  <label className="form-label">Question Title</label>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={newQuestion.title}
+                    onChange={(e) =>
+                      handleNewQuestionChange("title", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="mb-3">
                   <label className="form-label">Question Text</label>
                   <textarea
                     className="form-control"
@@ -223,54 +239,67 @@ const QuizQuestions: React.FC = () => {
 
                 {/* Choices */}
                 {newQuestion.type === "Multiple Choice" && (
-                  <div>
-                    {newQuestion.choices.map((choice: any, index: number) => (
-                      <div key={index} className="choice-row mb-3">
-                        <div className="d-flex align-items-center">
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder={`Answer ${index + 1}`}
-                            value={choice.text}
-                            onChange={(e) =>
-                              handleNewChoiceChange(index, e.target.value)
-                            }
-                          />
-                          <button
-                            className={`btn ${
-                              choice.correct ? "btn-success" : "btn-secondary"
-                            } ms-2`}
-                            onClick={() => handleMarkCorrect(index)}
-                          >
-                            {choice.correct ? "Correct" : "Mark"}
-                          </button>
-                          <button
-                            className="btn btn-danger ms-2"
-                            onClick={() => handleDeleteChoice(index)}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                    <button
-                      className="btn btn-secondary mt-3"
-                      onClick={handleAddChoice}
-                    >
-                      + Add Another Answer
-                    </button>
-                  </div>
-                )}
+  <div>
+    {newQuestion.choices.map((choice: any, index: number) => (
+      <div key={index} className="choice-row mb-3">
+        <div className="d-flex align-items-center">
+          <input
+            type="text"
+            className="form-control"
+            placeholder={`Answer ${index + 1}`}
+            value={choice.text}
+            onChange={(e) => handleNewChoiceChange(index, e.target.value)}
+          />
+          <button
+            className={`btn ${
+              choice.correct ? "btn-success" : "btn-secondary"
+            } ms-2`}
+            onClick={() => handleMarkCorrect(index)}
+          >
+            {choice.correct ? "Correct" : "Mark"}
+          </button>
+          <button
+            className="btn btn-danger ms-2"
+            onClick={() => handleDeleteChoice(index)}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    ))}
+    <button className="btn btn-secondary mt-3" onClick={handleAddChoice}>
+      + Add Another Answer
+    </button>
+  </div>
+)}
+
                  {/* True/False */}
                  {newQuestion.type === "True/False" && (
                   <div>
                     <label className="form-label">Answer</label>
                     <select
                       className="form-select"
-                      value={newQuestion.correctAnswer}
-                      onChange={(e) =>
-                        handleNewQuestionChange("correctAnswer", e.target.value)
-                      }
+                      value={newQuestion.choices[0]?.text || ""}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setNewQuestion((prev: any) => {
+                          const updatedChoices = prev.choices?.length
+                            ? [...prev.choices] // Use existing choices
+                            : [{ text: "true", correct: false }]; // Initialize if choices are empty
+                      
+                          // Update the text and ensure correct is true if it was false
+                          updatedChoices[0] = {
+                            text: value,
+                            correct: updatedChoices[0]?.correct ? true : value !== "", // Set correct to true if false
+                          };
+                      
+                          return {
+                            ...prev,
+                            choices: updatedChoices,
+                          };
+                        });
+                      }}
+                      
                     >
                       <option value="True">True</option>
                       <option value="False">False</option>
@@ -280,19 +309,57 @@ const QuizQuestions: React.FC = () => {
 
                 {/* Fill in the Blank */}
                 {newQuestion.type === "Fill in the Blank" && (
-                  <div>
-                    <label className="form-label">Correct Answer</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Correct answer"
-                      value={newQuestion.correctAnswer || ""}
-                      onChange={(e) =>
-                        handleNewQuestionChange("correctAnswer", e.target.value)
-                      }
-                    />
-                  </div>
-                )}
+  <div>
+    <label className="form-label">Correct Answers</label>
+    {newQuestion.choices.map((choice: any, index: number) => (
+      <div key={index} className="d-flex align-items-center mb-2">
+        <input
+          type="text"
+          className="form-control"
+          placeholder={`Correct answer ${index + 1}`}
+          value={choice.text}
+          onChange={(e) => {
+            const value = e.target.value;
+            setNewQuestion((prev: any) => {
+              const updatedChoices = [...prev.choices];
+              updatedChoices[index] = { text: value, correct: true }; // Mark as correct by default
+              return { ...prev, choices: updatedChoices };
+            });
+          }}
+        />
+        <button
+          type="button"
+          className="btn btn-danger ms-2"
+          onClick={() => {
+            setNewQuestion((prev: any) => {
+              const updatedChoices = prev.choices.filter((_:any, i:any) => i !== index);
+              return { ...prev, choices: updatedChoices };
+            });
+          }}
+        >
+          Remove
+        </button>
+      </div>
+    ))}
+    <button
+      type="button"
+      className="btn btn-primary mt-2"
+      onClick={() => {
+        setNewQuestion((prev: any) => {
+          const updatedChoices = [...prev.choices, { text: "", correct: true }]; // New correct answer
+          return { ...prev, choices: updatedChoices };
+        });
+      }}
+    >
+      Add Answer
+    </button>
+  </div>
+)}
+
+
+
+
+
               </div>
               <div className="modal-footer">
                 <button

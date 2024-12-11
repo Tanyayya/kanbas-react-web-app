@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: { questions:any } = {
   questions: [],
+  
 };
 const questionsSlice = createSlice({
   name: "questions",
@@ -25,6 +26,14 @@ const questionsSlice = createSlice({
         a._id === question._id ? question : a
       ) as any;
     },
+    // setSelectedQuestion: (state, { payload: quiz }) => {
+    //     state.selectedQuestion = quiz; // Store the selected quiz
+    //   },
+  
+    //   // Clear the selected quiz (optional for cleanup)
+    //   clearSelectedQuestion: (state) => {
+    //     state.selectedQuestion = null; // Reset the selected quiz
+    //   },
     editQuestions: (state, { payload: { id, data } }) => {
       state.questions = state.questions.map((a:any) =>
         a._id === id ? { ...a, ...data } : a
