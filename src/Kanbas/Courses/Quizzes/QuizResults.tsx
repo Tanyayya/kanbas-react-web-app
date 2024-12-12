@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { getLastAttempt } from "./client"; // Import your function to fetch last attempt
+import { getLastAttempt } from "./client"; // Function to fetch the last attempt
+import { getQuestionById } from "./client"; // Function to fetch question by ID
 import { useSelector } from "react-redux";
 
 const QuizResultPage: React.FC = () => {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const studentId = currentUser._id; // Assuming studentId is in the URL params
-  const { qid } = useParams(); // The quizId
-  const { state } = useLocation(); // Can be used for navigation state (if needed)
+  const studentId = currentUser._id; 
+  const { qid } = useParams();
+  
 
-  const [lastAttempt, setLastAttempt] = useState<any>(null); // To store the last attempt data
-  const [error, setError] = useState<string | null>(null); // To store error if fetching fails
+  const [lastAttempt, setLastAttempt] = useState<any>(null); 
+  const [error, setError] = useState<string | null>(null); 
+  const [questionData, setQuestionData] = useState<{ [key: string]: any }>({});
 
-  // Fetch the last attempt data when the component mounts
   useEffect(() => {
     const fetchLastAttemptData = async () => {
       try {
         const data = await getLastAttempt(qid as string, studentId as string);
-        setLastAttempt(data); // Store the data in state
+        setLastAttempt(data);
       } catch (error) {
         setError("Failed to fetch last attempt data.");
         console.error(error);
@@ -27,6 +28,34 @@ const QuizResultPage: React.FC = () => {
     fetchLastAttemptData();
   }, [qid, studentId]);
 
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      if (lastAttempt && lastAttempt.answers) {
+        const fetchedQuestions: { [key: string]: any } = {};
+
+        await Promise.all(
+          lastAttempt.answers.map(async (answer: any) => {
+            if (!questionData[answer.question]) {
+              try {
+                const question = await getQuestionById(
+                  answer.question,
+                  qid as string
+                );
+                fetchedQuestions[answer.question] = question;
+              } catch (error) {
+                console.error(`Failed to fetch question ${answer.question}`, error);
+              }
+            }
+          })
+        );
+
+        setQuestionData((prevData) => ({ ...prevData, ...fetchedQuestions }));
+      }
+    };
+
+    fetchQuestions();
+  }, [lastAttempt, questionData, qid]);
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -35,15 +64,10 @@ const QuizResultPage: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  const { answers, score, questions } = lastAttempt;
+  const { answers, score } = lastAttempt;
 
-  // Ensure that `questions` exists and is an array before calling `find`
   const getQuestionText = (questionId: string) => {
-    if (Array.isArray(questions)) {
-      const question = questions.find((q: any) => q._id === questionId);
-      return question ? question.questionText : "Unknown Question";
-    }
-    return "No questions available"; // Fallback if questions is undefined or not an array
+    return questionData[questionId]?.questionText || "Loading question...";
   };
 
   return (

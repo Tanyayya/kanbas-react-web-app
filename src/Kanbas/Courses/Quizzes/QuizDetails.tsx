@@ -5,17 +5,39 @@ import { useSelector } from "react-redux";
 
 const QuizDetails = () => {
   const [quiz, setQuiz] = useState<any>(null); // Store quiz data
+  const [closed,setClosed]=useState(false);
   const navigate = useNavigate();
   const { cid, qid } = useParams();
   const { currentUser } = useSelector((state: any) => state.accountReducer); // Get current user
+  const [availabilityStatus, setAvailabilityStatus] = useState<string>("");
+ 
+  const getAvailabilityStatus = (quizData: any) => {
+    const currentDate = new Date();
 
-  const isFaculty = currentUser?.role === "ADMIN";
+    if (quizData?.availableDate && quizData?.untilDate) {
+      const availableDate = new Date(quizData.availableDate);
+      const untilDate = new Date(quizData.untilDate);
+
+      if (currentDate < availableDate) {
+        return `Not available until ${availableDate.toLocaleDateString()}`;
+      } else if (currentDate > untilDate) {
+        setClosed(true)
+        return "Closed";
+      } else {
+        return "Available";
+      }
+    }
+
+    return "No availability data"; // In case dates are not set
+  };
   // Fetch quiz details when the component mounts
   useEffect(() => {
     const fetchQuizDetails = async () => {
         if (qid) {
       const quizData = await getQuiz(qid);
       setQuiz(quizData);
+      const status = getAvailabilityStatus(quizData); // Get availability status after quiz data is fetched
+        setAvailabilityStatus(status)
         }
     };
     fetchQuizDetails();
@@ -23,7 +45,7 @@ const QuizDetails = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString(); // Format as per your needs (e.g., "MM/DD/YYYY, HH:mm")
+    return date.toLocaleString(); 
   };
   const handleStartQuiz = () => {
     // Navigate to the quiz attempt page for students
@@ -35,24 +57,7 @@ const QuizDetails = () => {
   if (!quiz) {
     return <div>Loading...</div>;
   }
-  const getAvailabilityStatus = () => {
-    const currentDate = new Date();
-
-    if (quiz.availableDate && quiz.untilDate) {
-      const availableDate = new Date(quiz.availableDate);
-      const untilDate = new Date(quiz.untilDate);
-
-      if (currentDate < availableDate) {
-        return `Not available until ${availableDate.toLocaleDateString()}`;
-      } else if (currentDate > untilDate) {
-        return "Closed";
-      } else {
-        return "Available";
-      }
-    }
-
-    return "No availability data"; // In case dates are not set
-  };
+  
 
   return (
     <div style={{
@@ -65,7 +70,7 @@ const QuizDetails = () => {
       textAlign: 'center' // Center all text inside the container
     }}>
         
-        {currentUser.role === 'FACULTY' && (
+        {currentUser.role === 'ADMIN' && (
   <div>
     <button
       onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/view`)}
@@ -127,8 +132,9 @@ const QuizDetails = () => {
 
           </ul>
         </div>
-        {currentUser.role != 'FACULTY' && (
+       
         <div>
+        {currentUser.role != 'ADMIN' && (availabilityStatus != "Closed") && (
           <button style={{
             padding: '12px 20px',
             backgroundColor: '#4caf50',
@@ -140,7 +146,10 @@ const QuizDetails = () => {
             width: '50%',
             marginTop: '20px'
           }} onClick={handleStartQuiz}>Start Quiz</button>
+
+          )}
           <br></br>
+          {currentUser.role != 'ADMIN' && (
           <button style={{
             padding: '12px 20px',
             backgroundColor: '#4caf50',
@@ -152,8 +161,9 @@ const QuizDetails = () => {
             width: '50%',
             marginTop: '20px'
           }}onClick={()=> navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/results`)}>Quiz Results</button>
-        </div>
         )}
+        </div>
+       
       
 
       {/* Table for Date/Time Details */}

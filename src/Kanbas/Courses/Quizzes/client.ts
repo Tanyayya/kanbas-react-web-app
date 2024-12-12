@@ -113,9 +113,29 @@ export const getLastAttempt = async (quizId: string, userId: string) => {
     const { data } = await axiosWithCredentials.get(
       `${QUIZ_API}/${quizId}/user/${userId}/attempts/last`
     );
-    return data; // Return the last attempt data
+    return data; 
   } catch (error: any) {
     console.error("Error fetching last attempt:", error);
+    throw error;
+  }
+};
+export const getQuestionById = async (questionId: string, quizId: string) => {
+  try {
+    const { data } = await axiosWithCredentials.get(
+      `${QUIZ_API}/${quizId}/question/${questionId}`
+    );
+    return data; 
+  } catch (error: any) {
+    console.error("Error fetching last attempt:", error);
+    throw error;
+  }
+};
+export const getPublishedQuizzes = async () => {
+  try {
+    const { data } = await axios.get(`${QUIZ_API}/published`);
+    return data;
+  } catch (error) {
+    console.error("Error fetching published quizzes:", error);
     throw error;
   }
 };

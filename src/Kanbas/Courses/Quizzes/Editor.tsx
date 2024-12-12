@@ -48,6 +48,9 @@ export default function QuizEditor() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
+    if (name === "multipleAttempts" && !checked) {
+      formData.maxAttempts = 1;
+  }
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
@@ -80,6 +83,13 @@ const saveQuiz = async (course: any) => {
         
     }
     navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+};
+const formatDateForInput = (isoString:any) => {
+  const date = new Date(isoString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 // const saveQuiz = async (module: any) => {
 //     await qui.updateAssignment(module);
@@ -245,34 +255,37 @@ const handleSaveAndPublish = async () => {
             </div>
           </div>
 
-          {/* Multiple Attempts */}
           <div className="row mb-3 align-items-center">
-          <div className="col-md-5 text-end">
-            <label className="form-label">Multiple Attempts</label>
-            </div>
-            <div className="col-md-7">
-            <input
-            
-              type="checkbox"
-              name="multipleAttempts"
-              checked={formData.multipleAttempts}
-              onChange={handleInputChange}
-            />
-            </div>
-          </div>
-          <div className="row mb-3 align-items-center">
-          <div className="col-md-5 text-end">
-            <label className="form-label">Maximum Attempts</label>
-            </div>
-            <div className="col-md-7">
-            <input
-              type="number"
-              name="maxAttempts"
-              value={formData.maxAttempts}
-              onChange={handleInputChange}
-            />
-            </div>
-          </div>
+  <div className="col-md-5 text-end">
+    <label className="form-label">Multiple Attempts</label>
+  </div>
+  <div className="col-md-7">
+    <input
+      type="checkbox"
+      name="multipleAttempts"
+      checked={formData.multipleAttempts}
+      onChange={handleInputChange}
+    />
+  </div>
+</div>
+
+{formData.multipleAttempts && (
+  <div className="row mb-3 align-items-center">
+    <div className="col-md-5 text-end">
+      <label className="form-label">Maximum Attempts</label>
+    </div>
+    <div className="col-md-7">
+      <input
+        type="number"
+        name="maxAttempts"
+        value={formData.maxAttempts}
+        onChange={handleInputChange}
+      />
+    </div>
+  </div>
+)}
+
+         
           {/* Show Correct Answers */}
           <div className="row mb-3 align-items-center">
           <div className="col-md-5 text-end">
@@ -362,10 +375,8 @@ const handleSaveAndPublish = async () => {
                     <label htmlFor="dueDate" className="form-label">Due Date</label>
                 </div>
                 <div className="col-md-7">
-                <input
-                            type="date"
-                            id="wd-due-date"
-                            className="form-control mb-3" name="dueDate" value={formData.dueDate ? formData.dueDate.split("T")[0] : ""} onChange={handleInputChange}/>
+               
+                            <input id="dueDate" name="dueDate" type="date" className="form-control" value={formatDateForInput(formData.dueDate)} onChange={handleInputChange} />
                 </div>
             </div>
 
@@ -374,12 +385,8 @@ const handleSaveAndPublish = async () => {
                     <label htmlFor="availableDate" className="form-label">Available From</label>
                 </div>
                 <div className="col-md-7">
-                    <input name="availableDate" value={formData.availableDate ? formData.availableDate.split("T")[0] : ""}
-  id="wd-dob"
-  className="form-control mb-2"
-  
-  type="date" 
-    onChange={handleInputChange} />
+                <input id="availableDate" name="availableDate" type="date" className="form-control" value={formatDateForInput(formData.availableDate)} onChange={handleInputChange} />
+
                 </div>
             </div>
             <div className="row mb-3 align-items-center">
@@ -387,7 +394,7 @@ const handleSaveAndPublish = async () => {
                     <label htmlFor="dueDate" className="form-label">Until Date</label>
                 </div>
                 <div className="col-md-7">
-                    <input id="dueDate" name="untilDate" type="date" className="form-control" value={formData.untilDate ? formData.untilDate.split("T")[0] : ""} onChange={handleInputChange} />
+                <input id="untilDate" name="untilDate" type="date" className="form-control" value={formatDateForInput(formData.untilDate)} onChange={handleInputChange} />
                 </div>
             </div>
           <button type="button" className="btn btn-primary me-2" onClick={handleSave}>

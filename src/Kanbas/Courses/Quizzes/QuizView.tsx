@@ -98,6 +98,7 @@ const QuizPreview: React.FC = () => {
       };
 
       const response = await questionsClient.createAttempt(qid!, currentUser._id, attempt);
+      console.log(response)
       setAnswers(attempt.answers);
       setSubmitted(true);
 

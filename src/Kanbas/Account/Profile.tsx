@@ -14,7 +14,13 @@ export default function Profile() {
     dispatch(setCurrentUser(updatedProfile));
     
   };
-
+  const formatDateForInput = (isoString:any) => {
+    const date = new Date(isoString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
   const fetchProfile = () => {
     if (!currentUser) return navigate("/Kanbas/Account/Signin");
     setProfile(currentUser);
@@ -40,13 +46,8 @@ export default function Profile() {
                  onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}/>
           <input defaultValue={profile.lastName} id="wd-lastname" className="form-control mb-2"
                  onChange={(e) => setProfile({ ...profile, lastName:  e.target.value })}/>
-          <input
-  defaultValue={profile.dob ? profile.dob.split("T")[0] : ""}
-  id="wd-dob"
-  className="form-control mb-2"
-  onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
-  type="date"
-/>
+         <input value={formatDateForInput(profile.dob)} id="wd-dob" placeholder="Date of Birth" className="form-control mb-2"
+                 onChange={(e) => setProfile({ ...profile, dob: e.target.value })} type="date"/>
           <input defaultValue={profile.email} id="wd-email" className="form-control mb-2"
                  onChange={ (e) => setProfile({ ...profile, email: e.target.value })}/>
           <select onChange={(e) => setProfile({ ...profile, role:  e.target.value })}

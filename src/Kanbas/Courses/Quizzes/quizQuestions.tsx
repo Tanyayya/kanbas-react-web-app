@@ -42,11 +42,18 @@ const QuizQuestions: React.FC = () => {
   const isFaculty = currentUser?.role === "ADMIN";
 
   const fetchQuestions = async () => {
-    const fetchedQuestions = await quizClient.findQuestionsForQuizzes(
-      qid as string
-    );
-    dispatch(setQuestions(fetchedQuestions));
-  };
+   
+    
+    try{
+      const fetchedQuestions = await quizClient.findQuestionsForQuizzes(
+        qid
+      );
+      dispatch(setQuestions(fetchedQuestions));
+    }catch(error){
+      console.log(error);
+    }
+      
+    }
 
   useEffect(() => {
     fetchQuestions();
@@ -54,8 +61,11 @@ const QuizQuestions: React.FC = () => {
 
   const handleNewQuestionChange = (field: string, value: any) => {
     setNewQuestion((prev:any) => ({ ...prev, [field]: value }));
+   
   };
-
+  const totalPoints = questions
+  .filter((q: any) => q.quiz === qid) // Filter questions for the current quiz
+  .reduce((sum: number, question: any) => sum + (question.points || 0), 0); 
   const handleNewChoiceChange = (index: number, value: string) => {
     const updatedChoices = [...newQuestion.choices];
     updatedChoices[index].text = value;
@@ -125,6 +135,7 @@ const QuizQuestions: React.FC = () => {
   };
 
   const createQuestionsForQuiz = async (qid: string, assignmentData: any) => {
+    
     if (!qid) return;
     try {
       const newQuizQuestion = { ...newQuestion, quiz: qid };
@@ -141,9 +152,9 @@ const QuizQuestions: React.FC = () => {
  
 
   const handleSaveNewQuestion = async () => {
-    console.log(questionId)
+   
     
-    console.log(qid)
+    
     if (questionId) {
       const updatedOuestion = { ...newQuestion, _id: questionId };
       await saveQuestion(updatedOuestion);
@@ -171,6 +182,14 @@ const QuizQuestions: React.FC = () => {
             <FaPlus className="position-relative" style={{ paddingRight: 1 }} />
             Add Questions
           </button>
+          <button
+                    id="wd-add-assignments-btn"
+                    className="btn btn-md btn-secondary me-1 float-end"
+                    onClick={() => setShowModal(true)}
+                >
+                    Total Points: 
+                    {totalPoints}
+                </button>
         </div>
       )}
 

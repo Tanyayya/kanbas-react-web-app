@@ -16,7 +16,7 @@ import GreenCheckmark from "../Modules/GreenCheckmark";
 import QuizLessonControlButtons from "./QuizLessonControlButtons";
 export default function Quizzes() {
     const { cid } = useParams(); 
-   
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString("en-US", { day: "2-digit", month: "short" });
@@ -27,9 +27,9 @@ export default function Quizzes() {
     const toggleMenu = (quizId: string) => {
     setShowMenu(showMenu === quizId ? null : quizId);
   };
-
+  
   const { currentUser } = useSelector((state: any) => state.accountReducer); // Get current user
-  const isFaculty = currentUser?.role === "ADMIN";
+  const { quizzesStudent } = useSelector((state: any) => state.quizzesReducer);
   const { quizzes } = useSelector((state: any) => state.quizzesReducer);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const navigate = useNavigate();
@@ -38,19 +38,12 @@ export default function Quizzes() {
     const quizzes = await coursesClient.findQuizzesForCourses(cid as string);
     dispatch(setQuizzes(quizzes));
   };
-
-  const handleDeleteClick = (quizId: string) => {
-    setQuizToDelete(quizId);
-    setShowDeleteDialog(true);
+  const toggleDropdown = (quizId: string) => {
+    setActiveDropdown((prev) => (prev === quizId ? null : quizId));
   };
-  const handleEdit = (e: React.MouseEvent, quizId: string) => {
-    e.stopPropagation(); // Prevent the click from propagating to the parent element
+  const handleEditQuiz = (quizId: any) => {
     navigate(`${quizId}`);
-    
   };
-  
-
-  
   
   useEffect(() => {
     fetchQuizzes();
@@ -71,6 +64,10 @@ export default function Quizzes() {
     setShowDeleteDialog(false);
     setQuizToDelete(null);
   };
+  const handleDeleteQuiz = (quizId: string) => {
+    dispatch(deleteQuizz(quizId));
+    quizClient.deleteQuiz(quizId);
+  };
   const getAvailabilityStatus = (availableDate: string, dueDate: string) => {
     const currentDate = new Date();
     const availableDateObj = new Date(availableDate);
@@ -84,76 +81,97 @@ export default function Quizzes() {
       return "Available";
     }
   };
-    return (
-        <div>
-        <QuizControls cid={cid}/>
-        <br />
+  const handlePublish=(quizId:any)=>{
+    const quizToUpdate=quizzes.find((q:any)=>q._id===quizId);
+    const updatedQuiz={...quizToUpdate,published:!quizToUpdate.published};
+    updateQuiz(updatedQuiz);
+    dispatch(updateQuiz(updatedQuiz));
+  }
+  return (
+    <div>
+      <QuizControls cid={cid} />
+      <br />
       <ul className="list-group rounded-0">
-        <li className="wd-assignment-group list-group-item p-0 fs-5 border-gray">
-          <div className="wd-title p-3 d-flex justify-content-between align-items-center bg-secondary">
+        <li className="list-group-item p-0 fs-5 border-gray">
+          <div className="p-3 d-flex justify-content-between align-items-center bg-secondary">
             <div className="d-flex align-items-center">
               <BsGripVertical className="me-2 fs-3" />
               <span className="ms-2">Assignment Quizzes</span>
             </div>
-            <div className="d-flex align-items-center">
-              
-            </div>
           </div>
         </li>
         {quizzes.length > 0 ? (
-          quizzes.map((assignment:any) => (
-            <li
-              key={assignment._id}
-              className="list-group-item p-3 d-flex align-items-center"
-              style={{ borderLeft: "4px solid green" }}>
-              <BsGripVertical className="me-3 fs-2" />
-              <TfiWrite className="me-3 text-success fs-4" style={{fontSize:'2rem'}}/>
-              <div className="flex-grow-1">
-                <Link
-                  to={`${assignment._id}/details`}
-                  
-                  className="text-decoration-none text-dark"
-                >
-                  <span className="fw-bold fs-5">{assignment.title}</span>
-                </Link>
-                <br />
-                <small className="text-muted">
-                  <span className="text-danger">{assignment.title}</span> |{" "}
-                  Availablilty - 
-                  <b>{getAvailabilityStatus(assignment.availableDate, assignment.dueDate)}</b> | <br />
-                  <b>Due</b> {formatDate(assignment.dueDate)} at 11:59pm | {assignment.points} pts
-                </small>
-              </div>
-             
-              <div className="float-end me-3 d-flex align-items-center fs-5">
-              {currentUser.role === 'FACULTY' && (
-  <>
-    {assignment.published ? (
-      <GreenCheckmark />
-    ) : (
-      <span className="position-relative d-inline-block" style={{ width: "1.5em", height: "1.5em" }}>
-        <FaBan
-          className="text-danger position-absolute"
-          style={{ top: 3, left: 0, fontSize: "1.1em" }}
-        />
-      </span>
-    )}
-
-    <div className="align-content-center justify-content-end">
-      {/* Render QuizLessonControlButtons only for Faculty */}
-      <QuizLessonControlButtons courseId={cid || ''} quizId={assignment._id.toString()} published={assignment.isPublished} />
-    </div>
-  </>
-)}
-    </div>
-            </li>
-          ))
+          quizzes
+            .filter((quiz: any) => currentUser.role === "ADMIN" || quiz.published)
+            .map((quiz: any) => (
+              <li key={quiz._id} className="list-group-item p-3 d-flex align-items-center">
+                <BsGripVertical className="me-3 fs-2" />
+                <TfiWrite className="me-3 text-success fs-4" />
+                <div className="flex-grow-1">
+                  <Link to={`${quiz._id}/details`} className="text-decoration-none text-dark">
+                    <span className="fw-bold fs-5">{quiz.title}</span>
+                  </Link>
+                  <br />
+                  <small className="text-muted">
+                    <b>Availability:</b> {getAvailabilityStatus(quiz.availableDate, quiz.dueDate)} |{" "}
+                    <b>Due:</b> {formatDate(quiz.dueDate)} at 11:59pm | {quiz.points} pts
+                  </small>
+                </div>
+                {currentUser.role === "ADMIN" && (
+                  <div className="position-relative">
+                    {quiz.published ? (
+          <GreenCheckmark />
         ) : (
-          <p>No Quizzes available for this course.</p>
+          <span
+            className="position-relative d-inline-block"
+            style={{ width: "1.5em", height: "1.5em" }}
+          >
+            <FaBan
+              className="text-danger position-absolute"
+              style={{ top: 3, left: 0, fontSize: "1.1em" }}
+            />
+          </span>
+        )}
+                    <IoEllipsisVertical
+                      className="fs-4"
+                      onClick={() => toggleDropdown(quiz._id)}
+                      style={{ cursor: "pointer" }}
+                    />
+                    {activeDropdown === quiz._id && (
+                      <ul className="dropdown-menu show position-absolute" style={{ right: 0 }}>
+                        <li
+                          className="dropdown-item"
+                          onClick={() => handleEditQuiz(quiz._id)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          Edit
+                        </li>
+                        <li
+                          className="dropdown-item"
+                          onClick={() => handleDeleteQuiz(quiz._id)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          Delete
+                        </li>
+                        <li
+                          className="dropdown-item"
+                          onClick={() => handlePublish(quiz._id)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {quiz.published ? "Unpublish" : "Publish"}
+                        </li>
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </li>
+            ))
+        ) : (
+          <p>No quizzes available for this course.</p>
         )}
       </ul>
       {showDeleteDialog && (
-        <div className="modal show" style={{ display: 'block' }}>
+        <div className="modal show" style={{ display: "block" }}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -161,17 +179,20 @@ export default function Quizzes() {
                 <button type="button" className="btn-close" onClick={cancelDelete}></button>
               </div>
               <div className="modal-body">
-                <p>Are you sure you want to delete this assignment?</p>
+                <p>Are you sure you want to delete this quiz?</p>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={cancelDelete}>No, Cancel</button>
-                <button type="button" className="btn btn-danger" onClick={confirmDelete}>Yes, Delete</button>
+                <button type="button" className="btn btn-secondary" onClick={cancelDelete}>
+                  No, Cancel
+                </button>
+                <button type="button" className="btn btn-danger" onClick={confirmDelete}>
+                  Yes, Delete
+                </button>
               </div>
             </div>
           </div>
         </div>
       )}
-        </div>
-    )
-  
+    </div>
+  );
 }
