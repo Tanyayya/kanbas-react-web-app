@@ -72,7 +72,7 @@ const saveQuiz = async (course: any) => {
   };
   const handleSave = async () => {
     console.log(qid)
-    if (qid) {
+    if (qid!="new") {
        
         const updatedquiz = { ...formData, _id: qid };
           await saveQuiz(updatedquiz);
