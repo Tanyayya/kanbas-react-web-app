@@ -59,7 +59,7 @@ export default function QuizEditor() {
   const createQuizzesForCourse = async (cid: string, assignmentData: any) => {
     if (!cid) return;
     try {
-        const newQuiz = { ...formData, course: cid };
+        const newQuiz = { ...assignmentData, course: cid };
         const quiz = await coursesClient.createQuizzesForCourse(cid, newQuiz);
         dispatch(addQuizzes(quiz)); // Dispatch the new assignment to the store
     } catch (error) {
@@ -75,7 +75,7 @@ const saveQuiz = async (course: any) => {
        
         const updatedquiz = { ...formData, _id: qid };
           await saveQuiz(updatedquiz);
-          console.log(quiz);
+          
     } else {
        
         const newQuiz = { ...formData, _id: new Date().getTime().toString() };
