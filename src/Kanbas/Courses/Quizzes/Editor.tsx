@@ -71,6 +71,7 @@ const saveQuiz = async (course: any) => {
     dispatch(updateQuiz(quiz));
   };
   const handleSave = async () => {
+    console.log(qid)
     if (qid) {
        
         const updatedquiz = { ...formData, _id: qid };
