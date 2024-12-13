@@ -41,7 +41,7 @@ export default function AssignmentEditor() {
     };
 
     const assignment = assignments.find((a:any) => a.course === cid && a._id === aid) || defaultAssignment;
-   const [formData, setFormData] = useState({ 
+    const [formData, setFormData] = useState({ 
         ...defaultAssignment, 
         ...assignment, 
         onlineEntryOptions: {
@@ -59,7 +59,13 @@ export default function AssignmentEditor() {
             console.error("Error creating assignment:", error);
         }
     };
-
+    const formatDateForInput = (isoString:any) => {
+        const date = new Date(isoString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { id, value, type } = e.target;
         const checked = (e.target as HTMLInputElement).checked;
@@ -190,7 +196,7 @@ export default function AssignmentEditor() {
                     <label htmlFor="dueDate" className="form-label">Due Date</label>
                 </div>
                 <div className="col-md-7">
-                    <input id="dueDate" type="date" className="form-control" value={formData.dueDate} onChange={handleInputChange} />
+                    <input id="dueDate" type="date" className="form-control" value={formatDateForInput(formData.dueDate)} onChange={handleInputChange} />
                 </div>
             </div>
 
@@ -199,7 +205,7 @@ export default function AssignmentEditor() {
                     <label htmlFor="availableDate" className="form-label">Available From</label>
                 </div>
                 <div className="col-md-7">
-                    <input id="availableDate" type="date" className="form-control" value={formData.availableDate} onChange={handleInputChange} />
+                    <input id="availableDate" type="date" className="form-control" value={formatDateForInput(formData.availableDate)} onChange={handleInputChange} />
                 </div>
             </div>
             {isFaculty && (
