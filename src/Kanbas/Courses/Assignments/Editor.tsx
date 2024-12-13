@@ -41,7 +41,14 @@ export default function AssignmentEditor() {
     };
 
     const assignment = assignments.find((a:any) => a.course === cid && a._id === aid) || defaultAssignment;
-    const [formData, setFormData] = useState({ ...assignment });
+   const [formData, setFormData] = useState({ 
+        ...defaultAssignment, 
+        ...assignment, 
+        onlineEntryOptions: {
+            ...defaultAssignment.onlineEntryOptions,
+            ...(assignment.onlineEntryOptions || {}),
+        },
+    });
     const createAssignmentsForCourse = async (cid: string, assignmentData: any) => {
         if (!cid) return;
         try {
@@ -165,7 +172,7 @@ export default function AssignmentEditor() {
                                         type="checkbox"
                                         className="form-check-input"
                                         id={option}
-                                        checked={formData.onlineEntryOptions[option]}
+                                        checked={formData.onlineEntryOptions?.[option] || false}
                                         onChange={handleInputChange}
                                     />
                                     <label htmlFor={option} className="form-check-label">
